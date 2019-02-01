@@ -7,7 +7,8 @@ public class Trial
 	public static void main( String[] args )
 	{
 		Scanner kb = new Scanner(System.in);
-		LinkedHashSet<Node> nodes = new LinkedHashSet<>();
+
+		HashMapSet nodes = new HashMapSet();
 		Random ran = new Random();
 
 		System.out.println("Node amount?");
@@ -17,22 +18,22 @@ public class Trial
 		System.out.println("As 1/n  (1/10 = .1, 1/80 = .0125, etc.)");
 		int prob = kb.nextInt();
 		for ( int i = 0; i < nodeAmt; i++ )
-			nodes.add(new Node("" + i));
+			nodes.addNode("" + i);
 
-		for ( Node n : nodes )
-			for ( Node c : nodes )
+		for ( Node n : nodes.getNodes())
+			for ( Node c : nodes.getNodes())
 				if ( !c.equals(n) && ran.nextInt(prob) == 0 )
 				{
 					n.addEdge(c);
 					c.addEdge(n);
 				}
 
-		Node most = nodes.iterator().next();
+		Node most = nodes.getNodes().iterator().next();
 		Node least = most;
 		int total = 0;
 		// System.out.println("Node\t:\tFi ratio\t:\tConnections");
 		System.out.println("Node\t:\t Connections");
-		for ( Node n : nodes )
+		for ( Node n : nodes.getNodes())
 		{
 			if ( n.getEdgeCount() > most.getEdgeCount() )
 				most = n;
@@ -45,7 +46,7 @@ public class Trial
 			// neighbors += c.getSize();
 
 			System.out.print(n.getID() + "\t:\t " + n.getEdgeCount() + " ~ { ");
-			for ( Node c : n.getEdges() )
+			for ( Node c : n.getEdges())
 				System.out.print(c.getID() + ", ");
 			System.out.println("}");
 		}

@@ -6,48 +6,51 @@ public class Graph
 {
 	private boolean undirected;
 	private Random ran = new Random();
-	private HashSet<Node> nodes = new HashSet<>();
+	private HashMapSet nodes = new HashMapSet();
 
 	public Graph( boolean undirected )
 	{
 		this.undirected = undirected;
 	}
 
-	public boolean addEdge( Node n1, Node n2 )
+	public void addEdge( Node n1, Node n2 )
 	{
+
+		n1.addEdge(n2);
 		if ( undirected )
 			n2.addEdge(n1);
-		return n1.addEdge(n2);
 	}
 
-	public boolean removeEdge( Node n1, Node n2 )
+	public void removeEdge( String ID1, String ID2 )
 	{
+		nodes.getNode(ID1).removeEdge(ID2);
 		if ( undirected )
-			n2.removeEdge(n1);
-		return n1.removeEdge(n2);
+			nodes.getNode(ID2).removeEdge(ID1);
 	}
 
-	public boolean addNode( Node n )
+	public Node addNode( String ID )
 	{
-		return nodes.add(n);
+		return nodes.addNode(ID);
 	}
 
-	public boolean removeNode( Node n )
+	public void removeNode( String ID )
 	{
-		return nodes.remove(n);
+		for ( Node n : nodes.getNodes() )
+			n.removeEdge(ID);
+		nodes.remove(ID);
 	}
 
-	public HashSet<Node> getNodes()
+	public HashMapSet getNodes()
 	{
 		return nodes;
 	}
 
 	public void randomFill( int nodeAmt, int prob )
 	{
-		for ( int i = 0; i < nodeAmt; i++ )
-			nodes.add(new Node("" + i));
-		for ( Node n : nodes )
-			for ( Node c : nodes )
+		for ( int i = 1; i <= nodeAmt; i++ )
+			nodes.addNode("" + i);
+		for ( Node n : nodes.getNodes() )
+			for ( Node c : nodes.getNodes() )
 				if ( !c.equals(n) && ran.nextInt(prob) == 0 )
 					addEdge(n, c);
 	}
@@ -55,7 +58,7 @@ public class Graph
 	public int getTotalNodeCount()
 	{
 		int total = 0;
-		for (Node n : nodes)
+		for ( Node n : nodes.getNodes() )
 			total += n.getEdgeCount();
 		return total;
 	}

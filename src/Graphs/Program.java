@@ -31,7 +31,7 @@ public class Program
 				newGraphMenu();
 				break;
 			case 2:
-				
+
 			default:
 				break;
 			}
@@ -70,9 +70,17 @@ public class Program
 				Display.displayStats(graph.getNodes(), graph.getTotalNodeCount());
 				break;
 			case 3:
+				addNodeMenu();
+				break;
 			case 4:
+				removeNodeMenu();
+				break;
 			case 5:
+				addEdgeMenu();
+				break;
 			case 6:
+				removeEdgeMenu();
+				break;
 			default:
 				System.out.println("Doesn't do anything yet.");
 				break;
@@ -90,15 +98,71 @@ public class Program
 		graph.randomFill(nodeAmt, prob);
 	}
 
+	private static void addNodeMenu()
+	{
+		System.out.println("\nWhat would you like to call the node?");
+		Node n = graph.addNode(kb.nextLine());
+
+		System.out.println("\nWould you like to connect \"" + n.getID() + "\" to any other nodes?\n1. Yes\n2. No");
+		if ( choiceValidator(1, 2) == 1 )
+			addEdgeSubMenu(n);
+	}
+
+	private static void addEdgeMenu()
+	{
+		System.out.println("\nWhich node would you like to add edges to?");
+		addEdgeSubMenu(graph.getNodes().getNode(kb.nextLine()));
+	}
+
+	private static void addEdgeSubMenu( Node n )
+	{
+		String choice;
+		do
+		{
+			System.out.println("\nWhich node would you like to connect \"" + n.getID() + "\" to?\n-1 when finised");
+			choice = kb.nextLine();
+			if ( !choice.equals("-1") )
+				graph.addEdge(n, graph.getNodes().getNode(choice));
+		} while ( !choice.equals("-1") );
+	}
+
+	private static void removeNodeMenu()
+	{
+		String choice;
+		do
+		{
+			System.out.println("\nWhich node would you like to remove?\n-1 when finished");
+			choice = kb.nextLine();
+			if ( !choice.equals("-1") )
+				graph.removeNode(choice);
+		} while ( !choice.equals("-1") );
+	}
+
+	private static void removeEdgeMenu()
+	{
+		System.out.println("\nWhich node would you like to remove edges from?");
+		Node n = graph.getNodes().getNode(kb.nextLine());
+		String choice;
+		do
+		{
+			System.out.println("\nWhich node would you like to remove from \"" + n.getID() + "\" ?\n-1 when finished");
+			choice = kb.nextLine();
+			if (!choice.equals("-1"))
+				graph.removeEdge(n.getID(), choice);
+		} while ( !choice.equals("-1") );
+
+	}
+
 	private static int choiceValidator( int low, int high )
 	{
 		int choice = low;
 		do
 		{
 			if ( choice < low || choice > high )
-				System.out.println("\nInvalid choice!" + low + " - " + high);
+				System.out.println("\nInvalid choice!\n" + low + " - " + high);
 			choice = kb.nextInt();
 		} while ( choice < low || choice > high );
+		kb.nextLine();
 		return choice;
 	}
 }

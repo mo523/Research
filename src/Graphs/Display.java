@@ -1,13 +1,13 @@
 package Graphs;
 
-import java.util.*;
+//import java.util.*;
 
 public class Display
 {
-	static void displayGraph( HashSet<Node> nodes )
+	static void displayGraph( HashMapSet nodes )
 	{
 		System.out.println("\nNode\t:\tEdges");
-		for ( Node n : nodes )
+		for ( Node n : nodes.getNodes() )
 		{
 			System.out.print(n.getID() + "\t:\t " + n.getEdgeCount() + " { ");
 			for ( Node c : n.getEdges() )
@@ -16,12 +16,12 @@ public class Display
 		}
 	}
 	
-	static void displayStats(HashSet<Node> nodes, int totalNodes)
+	static void displayStats(HashMapSet nodes, int totalNodes)
 	{
 		int nodeCount = 0;
 		Node most;
-		Node least = most = nodes.iterator().next();
-		for (Node n : nodes)
+		Node least = most = nodes.getNodes().iterator().next();
+		for (Node n : nodes.getNodes())
 		{
 			if ( n.getEdgeCount() > most.getEdgeCount() )
 				most = n;

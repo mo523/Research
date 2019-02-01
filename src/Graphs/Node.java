@@ -2,53 +2,39 @@ package Graphs;
 
 import java.util.*;
 
-@SuppressWarnings( "rawtypes" )
-public class Node implements Comparable
+public class Node
 {
-	private HashSet<Node> edges = new HashSet<>();
+	private HashMapSet edges = new HashMapSet();
 	private String ID;
-	private int edgeCount = 0;
 
 	public Node( String ID )
 	{
 		this.ID = ID;
 	}
 
-	public boolean removeEdge( Node n )
+	public void removeEdge( String ID )
 	{
-		boolean success = edges.remove(n);
-		if ( success )
-			edgeCount--;
-		return success;
+		edges.remove(ID);
 	}
 
-	public boolean addEdge( Node n )
+	public void addEdge( Node n )
 	{
-		boolean success = edges.add(n);
-		if ( success )
-			edgeCount++;
-		return success;
+		edges.addEdge(n);
 	}
 
 	public HashSet<Node> getEdges()
 	{
-		return edges;
+		return edges.getNodes();
+	}
+
+	public int getEdgeCount()
+	{
+		return edges.getSize();
 	}
 
 	public String getID()
 	{
 		return ID;
-	}
-
-	public int getEdgeCount()
-	{
-		return edgeCount;
-	}
-
-	@Override
-	public int compareTo( Object o )
-	{
-		return ID.compareTo(( (Node) o ).getID());
 	}
 
 }
