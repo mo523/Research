@@ -5,35 +5,34 @@ import java.util.*;
 @SuppressWarnings( "rawtypes" )
 public class Node implements Comparable
 {
-	private TreeSet<Node> nodes = new TreeSet<>();
+	private HashSet<Node> edges = new HashSet<>();
 	private String ID;
-	private int size = 0;
-
-	public Node()
-	{
-		ID = "" + System.nanoTime();
-	}
+	private int edgeCount = 0;
 
 	public Node( String ID )
 	{
 		this.ID = ID;
 	}
 
-	public void removeConnection( Node n )
+	public boolean removeEdge( Node n )
 	{
-		nodes.remove(n);
-		size--;
+		boolean success = edges.remove(n);
+		if ( success )
+			edgeCount--;
+		return success;
 	}
 
-	public void addConnection( Node n )
+	public boolean addEdge( Node n )
 	{
-		nodes.add(n);
-		size++;
+		boolean success = edges.add(n);
+		if ( success )
+			edgeCount++;
+		return success;
 	}
 
-	public TreeSet<Node> getNodes()
+	public HashSet<Node> getEdges()
 	{
-		return nodes;
+		return edges;
 	}
 
 	public String getID()
@@ -41,15 +40,15 @@ public class Node implements Comparable
 		return ID;
 	}
 
-	public int getSize()
+	public int getEdgeCount()
 	{
-		return size;
+		return edgeCount;
 	}
 
 	@Override
 	public int compareTo( Object o )
 	{
-		return ID.compareTo(((Node) o).getID());
+		return ID.compareTo(( (Node) o ).getID());
 	}
 
 }
