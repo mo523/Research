@@ -1,5 +1,6 @@
 package Graphs;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Program
@@ -23,7 +24,7 @@ public class Program
 		do
 		{
 			System.out.println("\nWhat would you like to do?");
-			System.out.println("0. Quit\n1. Create a new graph\n2. Save graph");
+			System.out.println("0. Quit\n1. Create a new graph\n2. Do Nothing");
 			choice = choiceValidator(0, 2);
 			switch ( choice )
 			{
@@ -31,7 +32,6 @@ public class Program
 				newGraphMenu();
 				break;
 			case 2:
-
 			default:
 				break;
 			}
@@ -80,6 +80,9 @@ public class Program
 				break;
 			case 6:
 				removeEdgeMenu();
+				break;
+			case 7:
+				saveMenu();
 				break;
 			default:
 				System.out.println("Doesn't do anything yet.");
@@ -153,6 +156,20 @@ public class Program
 
 	}
 
+	private static void saveMenu() 
+	{
+		
+		System.out.println("FIlename and location?");
+		String f = kb.nextLine();
+		try
+		{
+			SaveFunc.createFile(f, graph.getNodes().getNodes());
+		} catch ( FileNotFoundException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	private static int choiceValidator( int low, int high )
 	{
 		int choice = low;

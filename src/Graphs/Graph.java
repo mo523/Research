@@ -49,6 +49,7 @@ public class Graph
 	{
 		for ( int i = 1; i <= nodeAmt; i++ )
 			nodes.addNode("" + i);
+		System.out.print("here");
 		for ( Node n : nodes.getNodes() )
 			for ( Node c : nodes.getNodes() )
 				if ( !c.equals(n) && ran.nextInt(prob) == 0 )
