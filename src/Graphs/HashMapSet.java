@@ -13,16 +13,16 @@ public class HashMapSet
 		nodeIDs.put(ID, n);
 		return n;
 	}
-	public void addEdge(Node n)
+	public boolean addEdge(Node n)
 	{
-		nodes.add(n);
 		nodeIDs.put(n.getID(), n);
+		return nodes.add(n);
 	}
 	
-	public void remove(String ID)
+	public boolean remove(String ID)
 	{
 		Node n = nodeIDs.remove(ID);
-		nodes.remove(n);
+		return nodes.remove(n);
 	}
 	public Node getNode(String ID)
 	{

@@ -23,10 +23,11 @@ public class Node
 	 *
 	 * @param ID
 	 *            ID of node to be unedged
+	 * @return
 	 */
-	public void removeEdge( String ID )
+	public boolean removeEdge( String ID )
 	{
-		edges.remove(ID);
+		return edges.remove(ID);
 	}
 
 	/**
@@ -34,10 +35,11 @@ public class Node
 	 *
 	 * @param n
 	 *            Reference of node to edge to
+	 * @return
 	 */
-	public void addEdge( Node n )
+	public boolean addEdge( Node n )
 	{
-		edges.addEdge(n);
+		return edges.addEdge(n);
 	}
 
 	/**
@@ -47,14 +49,16 @@ public class Node
 	{
 		return edges.getNodes();
 	}
+
 	/**
-	 * Returns the edge count of this node
-	 * Calculated by getting the size of the HashSet
+	 * Returns the edge count of this node Calculated by getting the size of the
+	 * HashSet
 	 */
 	public int getEdgeCount()
 	{
 		return edges.getSize();
 	}
+
 	/**
 	 * Returns the ID of this node
 	 */
@@ -63,4 +67,13 @@ public class Node
 		return ID;
 	}
 
+	public double getFi()
+	{
+		int ee = 0;
+		for ( Node n : edges.getNodes() )
+		{
+			ee += n.getEdgeCount();
+		}
+		return (double) ee / edges.getSize() / edges.getSize();
+	}
 }

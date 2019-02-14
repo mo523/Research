@@ -15,10 +15,10 @@ public class Graph
 
 	public void addEdge( Node n1, Node n2 )
 	{
-
 		n1.addEdge(n2);
 		if ( undirected )
 			n2.addEdge(n1);
+
 	}
 
 	public void removeEdge( String ID1, String ID2 )
@@ -62,5 +62,47 @@ public class Graph
 		for ( Node n : nodes.getNodes() )
 			total += n.getEdgeCount();
 		return total;
+	}
+
+	public int getTotalEdgeCount()
+	{
+		int total = 0;
+		for ( Node n : nodes.getNodes() )
+			total += n.getEdgeCount();
+		if ( undirected )
+			total /= 2;
+		return total;
+	}
+
+	public double getAsort()
+	{
+		double m = Math.pow(getTotalEdgeCount(), -1);
+		double sum1 = 0;
+		double sum2 = 0;
+		double sum3 = 0;
+
+		for ( Node n : nodes.getNodes() )
+			for ( Node c : n.getEdges() )
+			{
+				int ne = n.getEdgeCount();
+				int ce = c.getEdgeCount();
+				sum1 += ne * ce;
+				sum2 += ne + ce;
+				sum3 += Math.pow(ne, 2) + Math.pow(ce, 2);
+			}
+
+		if ( undirected )
+		{
+			sum1 /= 2;
+			sum2 /= 2;
+			sum3 /= 2;
+		}
+		sum2 *= .5 * m;
+		sum3 /= 2;
+		sum2 = Math.pow(sum2, 2);
+		double r = 0;
+		r = m * sum1 - sum2;
+		r /= ( m * sum3 - sum2 );
+		return r;
 	}
 }

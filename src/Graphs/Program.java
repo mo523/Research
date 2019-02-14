@@ -24,15 +24,18 @@ public class Program
 		do
 		{
 			System.out.println("\nWhat would you like to do?");
-			System.out.println("0. Quit\n1. Create a new graph\n2. Do Nothing");
-			choice = choiceValidator(0, 2);
+			System.out.println("0. Quit\n1. Create a new graph\n2. Import a graph");
+			choice = choiceValidator(0, 3);
 			switch ( choice )
 			{
 			case 1:
 				newGraphMenu();
 				break;
 			case 2:
+				importMenu();
+				break;
 			default:
+				graph = SaveFunc.fbook();
 				break;
 			}
 			if ( choice != 0 )
@@ -53,6 +56,11 @@ public class Program
 			randomFillMenu();
 	}
 
+	private static void importMenu()
+	{
+		graph = SaveFunc.importFile("");
+	}
+
 	private static void graphMenu()
 	{
 		int choice;
@@ -60,14 +68,14 @@ public class Program
 		{
 			System.out.println("\nWhat would you like to do with the graph?");
 			System.out.println(
-					"0. Main Menu\n1. View graph & stats\n2. View stats only\n3. Add node\n4. Remove node\n5. Add edge\n6. Remove Edge");
+					"0. Main Menu\n1. View graph & stats\n2. View stats only\n3. Add node\n4. Remove node\n5. Add edge\n6. Remove Edge\n7. Save Graph");
 			choice = choiceValidator(0, 10);
 			switch ( choice )
 			{
 			case 1:
 				Display.displayGraph(graph.getNodes());
 			case 2:
-				Display.displayStats(graph.getNodes(), graph.getTotalNodeCount());
+				Display.displayStats(graph.getNodes(), graph.getTotalNodeCount(), graph.getAsort());
 				break;
 			case 3:
 				addNodeMenu();
@@ -150,15 +158,15 @@ public class Program
 		{
 			System.out.println("\nWhich node would you like to remove from \"" + n.getID() + "\" ?\n-1 when finished");
 			choice = kb.nextLine();
-			if (!choice.equals("-1"))
+			if ( !choice.equals("-1") )
 				graph.removeEdge(n.getID(), choice);
 		} while ( !choice.equals("-1") );
 
 	}
 
-	private static void saveMenu() 
+	private static void saveMenu()
 	{
-		
+
 		System.out.println("FIlename and location?");
 		String f = kb.nextLine();
 		try
@@ -170,6 +178,7 @@ public class Program
 			e.printStackTrace();
 		}
 	}
+
 	private static int choiceValidator( int low, int high )
 	{
 		int choice = low;
