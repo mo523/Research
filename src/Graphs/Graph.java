@@ -51,15 +51,24 @@ public class Graph {
 
 	public void Barbasi(int nodeAmt, int startAmt) {
 		ArrayList<String> probability;
-		randomFill(startAmt, 80);
+		int index;
+		for (int i = 1; i <= startAmt; i++)
+			nodes.addNode("" + i);
+
+		index = ran.nextInt(nodes.getSize()) + 1;
+		System.out.println(index);
+		for (Node n : nodes.getNodes())
+			if (!n.getID().equals("" + index))
+				addEdge(nodes.getNode("" + index), n);
+
 		for (int nodeNumber = startAmt + 1; nodeNumber <= nodeAmt; nodeNumber++) {
 			Node n = new Node("" + nodeNumber);
-			int index;
+
 			probability = getNodeProbability();
 			for (int edgeNumber = 0; edgeNumber < 3; edgeNumber++) {
 				index = ran.nextInt(nodes.getSize() - edgeNumber);
 				final String secondNodeId = probability.get(index);
-				addEdge(n,nodes.getNode(secondNodeId));
+				addEdge(n, nodes.getNode(secondNodeId));
 				probability.removeIf(id -> id.equals(secondNodeId));
 
 			}
