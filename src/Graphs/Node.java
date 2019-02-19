@@ -4,30 +4,17 @@ import java.util.*;
 
 public class Node
 {
-	private HashMapSet edges = new HashMapSet();
-	private String ID;
+	private HashSet<Node> edges = new HashSet<>();
+	private int ID;
 
-	/**
-	 * Constructs a Node with the specified ID
-	 *
-	 * @param ID
-	 *            a string that will be used to identify the node
-	 */
-	public Node( String ID )
+	public Node( int ID )
 	{
 		this.ID = ID;
 	}
 
-	/**
-	 * Removes a directional edge with the specified ID
-	 *
-	 * @param ID
-	 *            ID of node to be unedged
-	 * @return
-	 */
-	public boolean removeEdge( String ID )
+	public int getID()
 	{
-		return edges.remove(ID);
+		return ID;
 	}
 
 	/**
@@ -37,9 +24,9 @@ public class Node
 	 *            Reference of node to edge to
 	 * @return
 	 */
-	public boolean addEdge( Node n )
+	public void addEdge( Node n )
 	{
-		return edges.addEdge(n);
+		edges.add(n);
 	}
 
 	/**
@@ -47,7 +34,7 @@ public class Node
 	 */
 	public HashSet<Node> getEdges()
 	{
-		return edges.getNodes();
+		return edges;
 	}
 
 	/**
@@ -56,24 +43,16 @@ public class Node
 	 */
 	public int getEdgeCount()
 	{
-		return edges.getSize();
-	}
-
-	/**
-	 * Returns the ID of this node
-	 */
-	public String getID()
-	{
-		return ID;
+		return edges.size();
 	}
 
 	public double getFi()
 	{
 		int ee = 0;
-		for ( Node n : edges.getNodes() )
+		for ( Node n : edges )
 		{
 			ee += n.getEdgeCount();
 		}
-		return (double) ee / edges.getSize() / edges.getSize();
+		return (double) ee / edges.size() / edges.size();
 	}
 }

@@ -4,10 +4,10 @@ import java.util.*;
 
 public class Display
 {
-	static void displayGraph( HashMapSet nodes )
+	static void displayGraph( HashMap<Integer, Node> nodes )
 	{
 		System.out.println("\nNode\t:\tEdges");
-		for ( Node n : nodes.getNodes() )
+		for ( Node n : nodes.values() )
 		{
 			System.out.print(n.getID() + "\t:\t " + n.getEdgeCount() + " : " + n.getFi() + " { ");
 			for ( Node c : n.getEdges() )
@@ -16,15 +16,15 @@ public class Display
 		}
 	}
 
-	static void displayStats( HashMapSet nodes, int totalNodes, double d )
+	static void displayStats( HashMap<Integer, Node> nodes, int totalNodes, double d )
 	{
 
 		ArrayList<Double> fi = new ArrayList<>();
 		ArrayList<Double> fit = new ArrayList<>();
 		int nodeCount = 0;
 		Node most;
-		Node least = most = nodes.getNodes().iterator().next();
-		for ( Node n : nodes.getNodes() )
+		Node least = most = nodes.values().iterator().next();
+		for ( Node n : nodes.values() )
 		{
 			if ( n.getEdgeCount() > most.getEdgeCount() )
 				most = n;
