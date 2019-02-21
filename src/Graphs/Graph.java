@@ -16,7 +16,7 @@ public class Graph {
 	public void addNode(int ID) {
 		nodes.put(ID, new Node(ID));
 	}
-
+ 
 	public HashMap<Integer, Node> getNodes() {
 		return nodes;
 	}
