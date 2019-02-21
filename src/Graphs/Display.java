@@ -16,47 +16,17 @@ public class Display
 		}
 	}
 
-	static void displayStats( HashMap<Integer, Node> nodes, int totalNodes, double d )
+	static void displayStats( String[] stats )
 	{
 
-		ArrayList<Double> fi = new ArrayList<>();
-		ArrayList<Double> fit = new ArrayList<>();
-		int nodeCount = 0;
-		int edgeCount = 0;
-		Node most;
-		Node least = most = nodes.values().iterator().next();
-		for ( Node n : nodes.values() )
-		{
-			if ( n.getEdgeCount() > most.getEdgeCount() )
-				most = n;
-			if ( n.getEdgeCount() < least.getEdgeCount() )
-				least = n;
-			nodeCount++;
-			double f = n.getFi();
-			fi.add(f);
-			fit.add(Math.log(f));
-			edgeCount += n.getEdgeCount();
-		}
-
-		double afi = 0;
-		double gfi = 0;
-		for ( int i = 0; i < fi.size(); i++ )
-		{
-			afi += fi.get(i);
-			gfi += fit.get(i);
-
-		}
-		afi /= nodeCount;
-		gfi /= nodeCount;
-		edgeCount /= 2;
-		System.out.println("\nTotal Nodes:\t\t" + nodeCount);
-		System.out.println("Total Edges:\t\t" + edgeCount);
-		System.out.println("Most Connections:\t" + most.getID() + "\t" + most.getEdgeCount());
-		System.out.println("Least Connections:\t" + least.getID() + "\t" + least.getEdgeCount());
-		System.out.println("Average Connections:\t" + ( (double) totalNodes / nodeCount ));
-		System.out.println("Graph assortativity:\t" + d);
-		System.out.println("AFI:\t\t\t" + afi);
-		System.out.println("GFI:\t\t\t" + gfi);
+		System.out.println("\nTotal Nodes:\t\t" + stats[0]);
+		System.out.println("Total Edges:\t\t" + stats[1]);
+		System.out.println("Most Connections:\t" + stats[2] + "\t" + stats[3]);
+		System.out.println("Least Connections:\t" + stats[4] + "\t" + stats[5]);
+		System.out.println("Average Connections:\t" + stats[6]);
+		System.out.println("Graph assortativity:\t" + stats[7]);
+		System.out.println("AFI:\t\t\t" + stats[8]);
+		System.out.println("GFI:\t\t\t" + stats[9]);
 
 	}
 }

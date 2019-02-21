@@ -77,9 +77,7 @@ public class Program
 			graph = SaveFunc.importSNAP(fName);
 			break;
 		}
-
-		Display.displayStats(graph.getNodes(), graph.getTotalNodeCount(), graph.getAsort());
-		
+		Display.displayStats(graph.getStats());
 	}
 
 	private static void graphMenu()
@@ -95,7 +93,7 @@ public class Program
 			case 1:
 				Display.displayGraph(graph.getNodes());
 			case 2:
-				Display.displayStats(graph.getNodes(), graph.getTotalNodeCount(), graph.getAsort());
+				Display.displayStats(graph.getStats());
 				break;
 			case 3:
 				saveMenu();

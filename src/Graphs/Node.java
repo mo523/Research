@@ -6,12 +6,23 @@ public class Node
 {
 	private HashSet<Node> edges = new HashSet<>();
 	private int ID;
+	// private int EEC = 0;
 
+	/**
+	 * Node constructor
+	 * 
+	 * @param ID
+	 *            Integer to reference this node in the graphs HashMap
+	 */
 	public Node( int ID )
 	{
 		this.ID = ID;
 	}
 
+	/**
+	 * 
+	 * @return Integer ID
+	 */
 	public int getID()
 	{
 		return ID;
@@ -24,10 +35,26 @@ public class Node
 	 *            Reference of node to edge to
 	 * @return
 	 */
-	public void addEdge( Node n )
+	public void addEdge( Node e )
 	{
-		edges.add(n);
+		edges.add(e);
+		// e.incrementEEC(this.getEdgeCount() - 1);
+		// edges.forEach(n -> n.incrementEEC());
 	}
+
+	// public void incrementEEC()
+	// {
+	// EEC++;
+	// }
+	// public void incrementEEC(int i)
+	// {
+	// EEC += i;
+	// }
+	//
+	// public int getEEC()
+	// {
+	// return EEC;
+	// }
 
 	/**
 	 * Returns the HashSet of this node's edges
@@ -46,13 +73,18 @@ public class Node
 		return edges.size();
 	}
 
+	/**
+	 * Calculates this nodes FI Iterates over the set of all it's edges and
+	 * increments a counter based off their total edges (gotten by
+	 * Node.getEdgeCount())
+	 * 
+	 * @return FI as a double
+	 */
 	public double getFi()
 	{
-		int ee = 0;
+		double EEC = 0;
 		for ( Node n : edges )
-		{
-			ee += n.getEdgeCount();
-		}
-		return (double) ee / edges.size() / edges.size();
+			EEC += n.getEdgeCount();
+		return (double) EEC / edges.size() / edges.size();
 	}
 }
