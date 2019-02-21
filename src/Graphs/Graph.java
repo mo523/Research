@@ -115,4 +115,11 @@ public class Graph {
 			return nodeProbabilityList;
 		}
 	}
+
+	public void addEdge( int nk1, int nk2 )
+	{
+		Node n1 = nodes.get(nk1);
+		Node n2 = nodes.get(nk2);
+		addEdge(n1,n2);
+	}
 }

@@ -31,8 +31,8 @@ public class SaveFunc
 			{
 				String[] temp = kb.nextLine().split(" ");
 				nes.add(new Integer[temp.length]);
-				for (int i = 0; i < temp.length; i++)
-					nes.get(nes.size()-1)[i] = Integer.parseInt(temp[i]);
+				for ( int i = 0; i < temp.length; i++ )
+					nes.get(nes.size() - 1)[i] = Integer.parseInt(temp[i]);
 			} while ( kb.hasNext() );
 
 			for ( Integer[] sa : nes )
@@ -51,6 +51,37 @@ public class SaveFunc
 			e.printStackTrace();
 		}
 		return g;
+	}
+
+	public static Graph importSNAP( String fName )
+	{
+		Graph graph = new Graph();
+		Scanner kb = null;
+		try
+		{
+			kb = new Scanner(new File(fName));
+
+			do
+			{
+				String[] in = kb.nextLine().split("	");
+				int n1 = Integer.parseInt(in[0]);
+				int n2 = Integer.parseInt(in[1]);
+				if ( !graph.getNodes().containsKey(n1) )
+					graph.addNode(n1);
+				if ( !graph.getNodes().containsKey(n2) )
+					graph.addNode(n2);
+				graph.addEdge(n1, n2);
+			} while ( kb.hasNextLine() );
+
+		} catch ( FileNotFoundException e )
+		{
+			e.printStackTrace();
+		} finally
+		{
+			kb.close();
+		}
+
+		return graph;
 	}
 
 }

@@ -57,7 +57,29 @@ public class Program
 
 	private static void importMenu()
 	{
-		graph = SaveFunc.importFile("");
+		System.out.println("\nWhat type of file?\n1. Moshe's\n2. SNAP");
+		int choice = choiceValidator(1, 2);
+		System.out.println("File name?");
+		String fName = kb.nextLine();
+		if (fName.charAt(0) == '1');
+		{
+			String m = "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs";
+			fName = fName.replace('1', '/');
+			m += fName;
+			fName = m;
+		}
+		switch ( choice )
+		{
+		case 1:
+			graph = SaveFunc.importFile(fName);
+			break;
+		case 2:
+			graph = SaveFunc.importSNAP(fName);
+			break;
+		}
+
+		Display.displayStats(graph.getNodes(), graph.getTotalNodeCount(), graph.getAsort());
+		
 	}
 
 	private static void graphMenu()
@@ -79,7 +101,6 @@ public class Program
 				saveMenu();
 				break;
 			default:
-				System.out.println("Doesn't do anything yet.");
 				break;
 			}
 		} while ( choice != 0 );
