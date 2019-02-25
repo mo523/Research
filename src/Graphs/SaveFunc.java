@@ -100,18 +100,22 @@ public class SaveFunc
 			file.println("GFI:\t\t\t" + stats[9]);
 			file.close();
 
-			Collections.sort(afis);
 			file = new PrintWriter(( fName + "_afis" ));
 			for ( double d : afis )
 				file.println(d);
 			file.close();
 
-			Collections.sort(gfis);
 			file = new PrintWriter(( fName + "_gfis" ));
 			for ( double d : gfis )
 				file.println(d);
 			file.close();
 
+			file = new PrintWriter(( fName + "_absgfis" ));
+			for ( double d : gfis )
+				file.println(Math.abs(d));
+			file.close();
+			
+			
 		} catch ( FileNotFoundException e )
 		{
 		}
