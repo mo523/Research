@@ -147,7 +147,7 @@ public class Graph
 		stats[3] = "" + max.getEdgeCount();
 		stats[4] = "" + min.getID();
 		stats[5] = "" + min.getEdgeCount();
-		stats[6] = "" + (double) edgeCount / nodeCount;
+		stats[6] = "" + (double) edgeCount / nodeCount * 2;
 		stats[7] = "" + asort;
 		stats[8] = "" + afi;
 		stats[9] = "" + gfi;
