@@ -63,7 +63,7 @@ public class SaveFunc
 
 			do
 			{
-				String[] in = kb.nextLine().split("	");
+				String[] in = kb.nextLine().split("\\s+");
 				int n1 = Integer.parseInt(in[0]);
 				int n2 = Integer.parseInt(in[1]);
 				if ( !graph.getNodes().containsKey(n1) )
