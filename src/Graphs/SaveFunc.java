@@ -84,4 +84,37 @@ public class SaveFunc
 		return graph;
 	}
 
+	public static void saveGraph( ArrayList<Double> afis, ArrayList<Double> gfis, String fName, String[] stats )
+	{
+		PrintWriter file;
+		try
+		{
+			file = new PrintWriter(( fName + "_stats" ));
+			file.println("\nTotal Nodes:\t\t" + stats[0]);
+			file.println("Total Edges:\t\t" + stats[1]);
+			file.println("Most Connections:\t" + stats[2] + "\t" + stats[3]);
+			file.println("Least Connections:\t" + stats[4] + "\t" + stats[5]);
+			file.println("Average Connections:\t" + stats[6]);
+			file.println("Graph assortativity:\t" + stats[7]);
+			file.println("AFI:\t\t\t" + stats[8]);
+			file.println("GFI:\t\t\t" + stats[9]);
+			file.close();
+
+			Collections.sort(afis);
+			file = new PrintWriter(( fName + "_afis" ));
+			for ( double d : afis )
+				file.println(d);
+			file.close();
+
+			Collections.sort(gfis);
+			file = new PrintWriter(( fName + "_gfis" ));
+			for ( double d : gfis )
+				file.println(d);
+			file.close();
+
+		} catch ( FileNotFoundException e )
+		{
+		}
+	}
+
 }

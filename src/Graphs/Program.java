@@ -61,7 +61,7 @@ public class Program
 		int choice = choiceValidator(1, 2);
 		System.out.println("File name?");
 		String fName = kb.nextLine();
-		if (fName.charAt(0) == '1');
+		if ( fName.charAt(0) == '1' )
 		{
 			String m = "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs";
 			fName = fName.replace('1', '/');
@@ -77,7 +77,7 @@ public class Program
 			graph = SaveFunc.importSNAP(fName);
 			break;
 		}
-		Display.displayStats(graph.getStats());
+		Display.displayStats(graph.getStats(fName));
 	}
 
 	private static void graphMenu()
@@ -93,7 +93,7 @@ public class Program
 			case 1:
 				Display.displayGraph(graph.getNodes());
 			case 2:
-				Display.displayStats(graph.getStats());
+				System.out.println("Filename to save afis and gfis to?");
 				break;
 			case 3:
 				saveMenu();
@@ -126,7 +126,7 @@ public class Program
 	private static void saveMenu()
 	{
 
-		System.out.println("FIlename and location?");
+		System.out.println("Filename and location?");
 		String f = kb.nextLine();
 		try
 		{

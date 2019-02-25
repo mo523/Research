@@ -94,7 +94,7 @@ public class Graph
 		return edgeCount;
 	}
 
-	public String[] getStats()
+	public String[] getStats(String fName)
 	{
 		int nodeCount = nodes.size();
 		String[] stats = new String[10];
@@ -106,12 +106,18 @@ public class Graph
 		double sum1 = 0;
 		double sum2 = 0;
 		double sum3 = 0;
-
+		ArrayList<Double> afis = new ArrayList<Double>();
+		ArrayList<Double> gfis = new ArrayList<Double>();
+		
 		for ( Node n : nodes.values() )
 		{
 			int ne = n.getEdgeCount();
-			afi += n.getFi();
-			gfi += Math.log(n.getFi());
+			double ta = n.getFi();
+			afi += ta;
+			afis.add(ta);
+			ta = Math.log(ta);
+			gfi += ta;
+			gfis.add(ta);
 
 			if ( n.getEdgeCount() < min.getEdgeCount() )
 				min = n;
@@ -145,6 +151,7 @@ public class Graph
 		stats[7] = "" + asort;
 		stats[8] = "" + afi;
 		stats[9] = "" + gfi;
+		SaveFunc.saveGraph(afis, gfis, fName, stats);
 		return stats;
 	}
 
