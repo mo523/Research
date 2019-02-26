@@ -52,7 +52,6 @@ public class Graph
 			nodes.put(i, new Node(i));
 
 		index = ran.nextInt(nodes.size());
-		System.out.println(index);
 		for ( Node n : nodes.values() )
 			if ( n.getID() != index )
 				addEdge(nodes.get(index), n);
@@ -163,5 +162,7 @@ public class Graph
 				nodeProbabilityList.add(n.getID());
 		return nodeProbabilityList;
 	}
+	
+	
 
 }
