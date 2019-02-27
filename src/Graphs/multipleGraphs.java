@@ -1,26 +1,39 @@
 package Graphs;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class multipleGraphs implements Runnable {
-	private ArrayList<Graph> graphs;
+public class multipleGraphs {
+	private ArrayList<Graph> graphs = new ArrayList<Graph>();
 	private int nodeAmt;
 	private boolean barbasi;
 	private int prob;
-	int graphAmt;
+	private int graphAmt;
+	private ExecutorService threadPool;
 
-	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, ArrayList<Graph> graphs) {
+	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt) {
 		this.nodeAmt = nodeAmt;
 		this.graphAmt = graphAmt;
 		this.barbasi = barbasi;
-		this.graphs = graphs;
+		threadPool = Executors.newFixedThreadPool(threadAmt);
+
 	}
 
-	@Override
-	public void run() {
-		Graph graph = createGraph();
-		graphs.add(graph);
-		System.out.println(graphs.size());
+	public void execute() {
+
+		for (int i = 0; i < graphAmt; i++) {
+			threadPool.submit(() -> {
+				Graph graph = createGraph();
+				graphs.add(graph);
+			});
+
+		}
+
+		threadPool.shutdown();
+		while (!threadPool.isTerminated()) {
+
+		}
 	}
 
 	public Graph createGraph() {

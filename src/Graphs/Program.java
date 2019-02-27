@@ -24,7 +24,7 @@ public class Program {
 		int choice = 0;
 		do {
 			System.out.println("\nWhat would you like to do?");
-			System.out.println("0. Quit\n1. Create a new graph\n2. Import a graph\\n2. Create multiple graphs");
+			System.out.println("0. Quit\n1. Create a new graph\n2. Import a graph \n3. Create multiple graphs");
 			choice = choiceValidator(0, 3);
 			switch (choice) {
 			case 1:
@@ -47,7 +47,7 @@ public class Program {
 	private static void multipleGraphMenu() {
 		multipleGraph();
 		System.out.println("All Done");
-		
+
 	}
 
 	private static void newGraphMenu() {
@@ -160,17 +160,19 @@ public class Program {
 		int graphAmt = kb.nextInt();
 
 		System.out.println("Enter number of threads");
-		ExecutorService threadPool = Executors.newFixedThreadPool(kb.nextInt());
+		int threads = kb.nextInt();
+		multipleGraphs multiple = new multipleGraphs(barbasi, graphAmt, nodes, threads);
+		multiple.execute();
 
-		for (int i = 0; i < graphAmt; i++) {
-			Runnable task = new multipleGraphs(barbasi, graphAmt, nodes, graphs);
-			threadPool.execute(task);
-		}
+		graphs = multiple.getGraphs();
 
-		threadPool.shutdown();
-		while(!threadPool.isTerminated()) {
-			
-		}
+	}
 
+	public static Graph createGraph(int nodeAmt) {
+		Graph graph = new Graph();
+
+		graph.Barbasi(nodeAmt);
+
+		return graph;
 	}
 }
