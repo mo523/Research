@@ -1,32 +1,39 @@
 package Graphs;
 
-import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
-public class Program {
+public class Program
+{
 	static ArrayList<Graph> graphs = new ArrayList<Graph>();
 	static ExecutorService threadPool;
 	static Scanner kb;
 	static Graph graph;
+	static String[] stats;
 
-	public static void main(String[] args) {
+	public static void main( String[] args )
+	{
 		kb = new Scanner(System.in);
-
-		initialMenu();
+		System.out.println("10 Tests?");
+		if ( choiceValidator(1, 2) == 1 )
+			tenTest();
+		else
+			initialMenu();
 
 		kb.close();
 	}
 
-	private static void initialMenu() {
+	private static void initialMenu()
+	{
 		System.out.println("Welcome to the graphing thingy!");
 		int choice = 0;
-		do {
+		do
+		{
 			System.out.println("\nWhat would you like to do?");
 			System.out.println("0. Quit\n1. Create a new graph\n2. Import a graph \n3. Create multiple graphs");
 			choice = choiceValidator(0, 3);
-			switch (choice) {
+			switch ( choice )
+			{
 			case 1:
 				newGraphMenu();
 				break;
@@ -39,41 +46,39 @@ public class Program {
 			default:
 				break;
 			}
-			if (choice != 0)
+			if ( choice != 0 )
 				graphMenu();
-		} while (choice != 0);
+		} while ( choice != 0 );
 	}
 
-	private static void multipleGraphMenu() {
+	private static void multipleGraphMenu()
+	{
 		multipleGraph();
 		System.out.println("All Done");
 
 	}
 
-	private static void newGraphMenu() {
+	private static void newGraphMenu()
+	{
 		int choice;
 		graph = new Graph();
-
-		System.out.println("\nHow would you like to fill the graph?\n1. Random\n2. Barbashi-Albert");
+		stats = null;
+		System.out.println("\nHow would you like to fill the graph?\n1. Barbashi-Albert\n2. Random");
 		choice = choiceValidator(1, 2);
-		if (choice == 1)
+		if ( choice == 2 )
 			randomFillMenu();
 		else
 			barbashiFillMenu();
 	}
 
-	private static void importMenu() {
+	private static void importMenu()
+	{
 		System.out.println("\nWhat type of file?\n1. Moshe's\n2. SNAP");
 		int choice = choiceValidator(1, 2);
 		System.out.println("File name?");
 		String fName = kb.nextLine();
-		if (fName.charAt(0) == '1') {
-			String m = "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs";
-			fName = fName.replace('1', '/');
-			m += fName;
-			fName = m;
-		}
-		switch (choice) {
+		switch ( choice )
+		{
 		case 1:
 			graph = SaveFunc.importFile(fName);
 			break;
@@ -81,20 +86,27 @@ public class Program {
 			graph = SaveFunc.importSNAP(fName);
 			break;
 		}
-		Display.displayStats(graph.getStats(fName));
+		stats = graph.getStats();
+		Display.displayStats(stats);
+		SaveFunc.saveGraph(graph.getAfis(), graph.getGfis(), fName, stats);
 	}
 
-	private static void graphMenu() {
+	private static void graphMenu()
+	{
 		int choice;
-		do {
+		do
+		{
 			System.out.println("\nWhat would you like to do with the graph?");
 			System.out.println("0. Main Menu\n1. View graph & stats\n2. View stats only\n3. Save Graph");
 			choice = choiceValidator(0, 10);
-			switch (choice) {
+			switch ( choice )
+			{
 			case 1:
 				Display.displayGraph(graph.getNodes());
 			case 2:
-				System.out.println("Filename to save afis and gfis to?");
+				if ( stats == null )
+					stats = graph.getStats();
+				Display.displayStats(graph.getStats());
 				break;
 			case 3:
 				saveMenu();
@@ -102,10 +114,11 @@ public class Program {
 			default:
 				break;
 			}
-		} while (choice != 0);
+		} while ( choice != 0 );
 	}
 
-	private static void randomFillMenu() {
+	private static void randomFillMenu()
+	{
 		System.out.println("\nHow many nodes?");
 		int nodeAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("\nConnection Probability?");
@@ -115,43 +128,43 @@ public class Program {
 
 	}
 
-	private static void barbashiFillMenu() {
+	private static void barbashiFillMenu()
+	{
 		System.out.println("\nHow many nodes?");
 		int nodeAmt = choiceValidator(1, Integer.MAX_VALUE);
-		System.out.println("\nWould you like to use Barbasi Albert;\n1. Yes\n2. No");
 		graph.Barbasi(nodeAmt);
 	}
 
-	private static void saveMenu() {
-
+	private static void saveMenu()
+	{
 		System.out.println("Filename and location?");
-		String f = kb.nextLine();
-		try {
-			SaveFunc.createFile(f, graph.getNodes());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String fName = kb.nextLine();
+		if ( stats == null )
+			stats = graph.getStats();
+		SaveFunc.saveGraph(graph.getAfis(), graph.getGfis(), fName, stats);
 	}
 
-	private static int choiceValidator(int low, int high) {
+	private static int choiceValidator( int low, int high )
+	{
 		int choice = low;
-		do {
-			if (choice < low || choice > high)
+		do
+		{
+			if ( choice < low || choice > high )
 				System.out.println("\nInvalid choice!\n" + low + " - " + high);
 			choice = kb.nextInt();
-		} while (choice < low || choice > high);
+		} while ( choice < low || choice > high );
 		kb.nextLine();
 		return choice;
 	}
 
-	public static void multipleGraph() {
+	public static void multipleGraph()
+	{
 		boolean barbasi;
 		System.out.println("Enter number of nodes");
 		int nodes = kb.nextInt();
-		System.out.println("\nHow would you like to fill these graphs?\n1. Random\n2. Barbashi-Albert");
+		System.out.println("\nHow would you like to fill these graphs?\n1. Barbashi-Albert\n2. Random");
 		int choice = choiceValidator(1, 2);
-		if (choice == 1)
+		if ( choice == 1 )
 			barbasi = false;
 		else
 			barbasi = true;
@@ -163,16 +176,30 @@ public class Program {
 		int threads = kb.nextInt();
 		multipleGraphs multiple = new multipleGraphs(barbasi, graphAmt, nodes, threads);
 		multiple.execute();
-
-		graphs = multiple.getGraphs();
-
 	}
 
-	public static Graph createGraph(int nodeAmt) {
+	public static Graph createGraph( int nodeAmt )
+	{
 		Graph graph = new Graph();
 
 		graph.Barbasi(nodeAmt);
 
 		return graph;
+	}
+
+	private static void tenTest()
+	{
+//		System.out.println("How many Graphs?");
+//		int gAmt = kb.nextLine();
+//		System.out.println()
+		for ( int i = 0; i < 10; i++ )
+		{
+			Graph g = new Graph();
+			g.Barbasi(100000);
+			stats = g.getStats();
+			SaveFunc.saveGraph(g.getAfis(), g.getGfis(), ",test" + ( i + 1 ), stats);
+			System.out.println("Done " + ( i + 1 ));
+		}
+		System.out.println("COMPLETE");
 	}
 }

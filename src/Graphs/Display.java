@@ -18,7 +18,6 @@ public class Display
 
 	static void displayStats( String[] stats )
 	{
-
 		System.out.println("\nTotal Nodes:\t\t" + stats[0]);
 		System.out.println("Total Edges:\t\t" + stats[1]);
 		System.out.println("Most Connections:\t" + stats[2] + "\t" + stats[3]);

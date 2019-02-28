@@ -7,25 +7,12 @@ import java.util.*;
 
 public class SaveFunc
 {
-	public static void createFile( String fileName, HashMap<Integer, Node> graph ) throws FileNotFoundException
-	{
-		PrintWriter file = new PrintWriter(fileName);
-		for ( Node n : graph.values() )
-		{
-			file.print(n.getID());
-			for ( Node c : n.getEdges() )
-				file.print(" " + c.getID());
-			file.println();
-		}
-		file.close();
-	}
-
 	public static Graph importFile( String fileName )
 	{
 		Graph g = new Graph();
 		try
 		{
-			Scanner kb = new Scanner(new File(fileName));
+			Scanner kb = new Scanner(new File(shortcut(fileName)));
 			ArrayList<Integer[]> nes = new ArrayList<>();
 			do
 			{
@@ -59,7 +46,7 @@ public class SaveFunc
 		Scanner kb = null;
 		try
 		{
-			kb = new Scanner(new File(fName));
+			kb = new Scanner(new File(shortcut(fName)));
 
 			do
 			{
@@ -86,10 +73,13 @@ public class SaveFunc
 
 	public static void saveGraph( ArrayList<Double> afis, ArrayList<Double> gfis, String fName, String[] stats )
 	{
+		fName = shortcut(fName);
 		PrintWriter file;
+
 		try
 		{
-			file = new PrintWriter(( fName + "_stats" ));
+			file = new PrintWriter(fName + "_stats");
+
 			file.println("\nTotal Nodes:\t\t" + stats[0]);
 			file.println("Total Edges:\t\t" + stats[1]);
 			file.println("Most Connections:\t" + stats[2] + "\t" + stats[3]);
@@ -109,16 +99,24 @@ public class SaveFunc
 			for ( double d : gfis )
 				file.println(d);
 			file.close();
-
-			file = new PrintWriter(( fName + "_absgfis" ));
-			for ( double d : gfis )
-				file.println(Math.abs(d));
-			file.close();
-			
-			
 		} catch ( FileNotFoundException e )
 		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+	}
+
+	private static String shortcut( String fName )
+	{
+		if ( fName.charAt(0) == ',' )
+		{
+			String m = "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs";
+			fName = fName.replace(',', '/');
+			m += fName;
+			fName = m;
+		}
+		return fName;
 	}
 
 }

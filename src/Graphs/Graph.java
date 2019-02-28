@@ -8,6 +8,8 @@ public class Graph
 	private Random ran = new Random();
 	private HashMap<Integer, Node> nodes = new HashMap<>();
 	private int edgeCount = 0;
+	private ArrayList<Double> afis;
+	private ArrayList<Double> gfis;
 
 	public void addEdge( Node n1, Node n2 )
 	{
@@ -93,7 +95,7 @@ public class Graph
 		return edgeCount;
 	}
 
-	public String[] getStats(String fName)
+	public String[] getStats()
 	{
 		int nodeCount = nodes.size();
 		String[] stats = new String[10];
@@ -105,9 +107,8 @@ public class Graph
 		double sum1 = 0;
 		double sum2 = 0;
 		double sum3 = 0;
-		ArrayList<Double> afis = new ArrayList<Double>();
-		ArrayList<Double> gfis = new ArrayList<Double>();
-		
+		afis = new ArrayList<>();
+		gfis = new ArrayList<>();
 		for ( Node n : nodes.values() )
 		{
 			int ne = n.getEdgeCount();
@@ -150,7 +151,6 @@ public class Graph
 		stats[7] = "" + asort;
 		stats[8] = "" + afi;
 		stats[9] = "" + gfi;
-		SaveFunc.saveGraph(afis, gfis, fName, stats);
 		return stats;
 	}
 
@@ -162,7 +162,15 @@ public class Graph
 				nodeProbabilityList.add(n.getID());
 		return nodeProbabilityList;
 	}
-	
-	
+
+	public ArrayList<Double> getAfis()
+	{
+		return afis;
+	}
+
+	public ArrayList<Double> getGfis()
+	{
+		return gfis;
+	}
 
 }
