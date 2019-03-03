@@ -14,12 +14,7 @@ public class Program
 	public static void main( String[] args )
 	{
 		kb = new Scanner(System.in);
-		System.out.println("10 Tests?");
-		if ( choiceValidator(1, 2) == 1 )
-			tenTest();
-		else
-			initialMenu();
-
+		initialMenu();
 		kb.close();
 	}
 
@@ -31,7 +26,7 @@ public class Program
 		{
 			System.out.println("\nWhat would you like to do?");
 			System.out.println("0. Quit\n1. Create a new graph\n2. Import a graph \n3. Create multiple graphs");
-			choice = choiceValidator(0, 3);
+			choice = choiceValidator(0, 4);
 			switch ( choice )
 			{
 			case 1:
@@ -43,6 +38,9 @@ public class Program
 			case 3:
 				multipleGraphMenu();
 				break;
+			case 4:
+				choice = 0;
+				tenTest();
 			default:
 				break;
 			}
@@ -189,13 +187,19 @@ public class Program
 
 	private static void tenTest()
 	{
-//		System.out.println("How many Graphs?");
-//		int gAmt = kb.nextLine();
-//		System.out.println()
-		for ( int i = 0; i < 10; i++ )
+		System.out.println("How many Graphs?");
+		int gAmt = choiceValidator(1, Integer.MAX_VALUE);
+		System.out.println("How many nodes?");
+		int nAmt = choiceValidator(1, Integer.MAX_VALUE);
+		System.out.println("1. Barbasi\n2. Random");
+		int gGen = choiceValidator(1, 2);
+		for ( int i = 0; i < gAmt; i++ )
 		{
 			Graph g = new Graph();
-			g.Barbasi(100000);
+			if ( gGen == 1 )
+				g.Barbasi(nAmt);
+			else
+				g.randomFill(nAmt, 80);
 			stats = g.getStats();
 			SaveFunc.saveGraph(g.getAfis(), g.getGfis(), ",test" + ( i + 1 ), stats);
 			System.out.println("Done " + ( i + 1 ));

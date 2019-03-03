@@ -39,7 +39,6 @@ public class Graph
 	{
 		for ( int i = 0; i < nodeAmt; i++ )
 			nodes.put(i, new Node(i));
-		System.out.print("here");
 		for ( Node n : nodes.values() )
 			for ( Node c : nodes.values() )
 				if ( !c.equals(n) && ran.nextInt(prob) == 0 )
