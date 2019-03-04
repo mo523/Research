@@ -10,6 +10,7 @@ public class Graph
 	private int edgeCount = 0;
 	private ArrayList<Double> afis;
 	private ArrayList<Double> gfis;
+	private boolean colored = false;
 
 	public void addEdge( Node n1, Node n2 )
 	{
@@ -75,6 +76,73 @@ public class Graph
 			}
 			nodes.put(nodeNumber, n);
 		}
+	}
+
+	public void randomVac( double p, boolean ran )
+	{
+		int tn = getTotalNodeCount();
+		int maxVac = (int) ( tn * p );
+		int ja = getTotalNodeCount() / maxVac;
+		for ( int i = 0; i < tn; i += ja )
+			quarNode(i, ran);
+	}
+
+	public void quarNode( int k, boolean ran )
+	{
+		Node n = nodes.get(k);
+		if ( n != null )
+		{
+			if ( ran )
+			{
+				for ( Node e : n.getEdges() )
+					e.removeEdge(n);
+				n.resetEdges();
+			}
+			else
+			{
+				Node m = new Node(-1);
+				for ( Node e : n.getEdges() )
+					if ( e.getEdgeCount() > m.getEdgeCount() )
+						m = e;
+				for ( Node e : m.getEdges() )
+					e.removeEdge(m);
+				m.resetEdges();
+			}
+		}
+	}
+
+	private void resetColors()
+	{
+		for ( Node n : nodes.values() )
+			n.uncolor();
+	}
+
+	public ArrayList<Integer> getSubgraphs()
+	{
+		if ( colored )
+			resetColors();
+		ArrayList<Integer> subgraphs = new ArrayList<>();
+		Queue<Node> q = new LinkedList<>();
+		for ( Node n : nodes.values() )
+		{
+			int total = 0;
+			if ( !n.colored() )
+				q.add(n);
+			while ( !q.isEmpty() )
+			{
+				Node e = q.poll();
+				if ( !e.colored() )
+				{
+					e.color();
+					total++;
+					q.addAll(n.getEdges());
+				}
+			}
+			subgraphs.add(total);
+		}
+		colored = true;
+		Collections.sort(subgraphs);
+		return subgraphs;
 	}
 
 	/**

@@ -6,6 +6,7 @@ public class Node
 {
 	private HashSet<Node> edges = new HashSet<>();
 	private int ID;
+	private boolean color = false;
 	// private int EEC = 0;
 
 	/**
@@ -38,23 +39,32 @@ public class Node
 	public void addEdge( Node e )
 	{
 		edges.add(e);
-		// e.incrementEEC(this.getEdgeCount() - 1);
-		// edges.forEach(n -> n.incrementEEC());
 	}
 
-	// public void incrementEEC()
-	// {
-	// EEC++;
-	// }
-	// public void incrementEEC(int i)
-	// {
-	// EEC += i;
-	// }
-	//
-	// public int getEEC()
-	// {
-	// return EEC;
-	// }
+	public void removeEdge( Node e )
+	{
+		edges.remove(e);
+	}
+
+	public void resetEdges()
+	{
+		edges = new HashSet<>();
+	}
+
+	public void color()
+	{
+		color = true;
+	}
+
+	public void uncolor()
+	{
+		color = false;
+	}
+
+	public boolean colored()
+	{
+		return color;
+	}
 
 	/**
 	 * Returns the HashSet of this node's edges

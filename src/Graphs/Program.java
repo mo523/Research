@@ -109,10 +109,25 @@ public class Program
 			case 3:
 				saveMenu();
 				break;
+			case 4:
+				subgraphMenu();
+				break;
 			default:
 				break;
 			}
 		} while ( choice != 0 );
+	}
+
+	private static void subgraphMenu()
+	{
+		System.out.println("1. Random\n2. Friends");
+		boolean ran = choiceValidator(1, 2) == 1;
+		System.out.println("What % of peeps get vacced?");
+		double p = kb.nextDouble();
+		graph.randomVac(p, ran);
+		ArrayList<Integer> subgraphs = graph.getSubgraphs();
+		System.out.println("\nTotal Subgraphs: " + subgraphs.size());
+		System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
 	}
 
 	private static void randomFillMenu()
