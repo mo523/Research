@@ -79,7 +79,7 @@ public class Program
 				double p = kb.nextDouble();
 				graphs.subGraph(p, ran, threadAmt);
 				System.out.println("\nAvg Total Subgraphs: " + graphs.totalSubgraphAvg());
-				System.out.println("Avg Biggest Subgraph: " + graphs.totalSubgraphAvg());
+				System.out.println("Avg Biggest Subgraph: " + graphs.largestSubgraphAvg());
 			default:
 				break;
 			}
