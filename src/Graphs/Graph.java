@@ -162,10 +162,10 @@ public class Graph
 		return edgeCount;
 	}
 
-	public String[] getStats()
+	public double[] getStats()
 	{
 		int nodeCount = nodes.size();
-		String[] stats = new String[10];
+		double[] stats = new double[10];
 		Node min = nodes.values().iterator().next();
 		Node max = min;
 		double afi = 0;
@@ -208,16 +208,16 @@ public class Graph
 		afi /= nodeCount;
 		gfi /= nodeCount;
 
-		stats[0] = "" + nodeCount;
-		stats[1] = "" + edgeCount;
-		stats[2] = "" + max.getID();
-		stats[3] = "" + max.getEdgeCount();
-		stats[4] = "" + min.getID();
-		stats[5] = "" + min.getEdgeCount();
-		stats[6] = "" + (double) edgeCount / nodeCount * 2;
-		stats[7] = "" + asort;
-		stats[8] = "" + afi;
-		stats[9] = "" + gfi;
+		stats[0] = nodeCount;
+		stats[1] = edgeCount;
+		stats[2] = max.getID();
+		stats[3] = max.getEdgeCount();
+		stats[4] = min.getID();
+		stats[5] = min.getEdgeCount();
+		stats[6] = (double) edgeCount / nodeCount * 2;
+		stats[7] = asort;
+		stats[8] = afi;
+		stats[9] = gfi;
 		return stats;
 	}
 

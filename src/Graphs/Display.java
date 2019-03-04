@@ -16,7 +16,7 @@ public class Display
 		}
 	}
 
-	static void displayStats( String[] stats )
+	static void displayStats( double[] stats )
 	{
 		System.out.println("\nTotal Nodes:\t\t" + stats[0]);
 		System.out.println("Total Edges:\t\t" + stats[1]);

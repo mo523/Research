@@ -71,7 +71,7 @@ public class SaveFunc
 		return graph;
 	}
 
-	public static void saveGraph( ArrayList<Double> afis, ArrayList<Double> gfis, String fName, String[] stats )
+	public static void saveGraph( ArrayList<Double> afis, ArrayList<Double> gfis, String fName, double[] stats )
 	{
 		fName = shortcut(fName);
 		PrintWriter file;
