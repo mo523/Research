@@ -80,5 +80,6 @@ public class multipleGraphs {
 		for (Graph graph : graphs)
 			subgraph += Collections.max(graph.getSubgraphs());
 		return (subgraph / graphs.size());
+		
 	}
 }
