@@ -1,6 +1,7 @@
 package Graphs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,8 +25,7 @@ public class multipleGraphs {
 
 		for (int i = 0; i < graphAmt; i++) {
 			threadPool.submit(() -> {
-				Graph graph = createGraph();
-				graphs.add(graph);
+				graphs.add(createGraph());
 			});
 
 		}
@@ -34,16 +34,17 @@ public class multipleGraphs {
 		while (!threadPool.isTerminated()) {
 
 		}
+		System.out.println("Graphs Created!!");
+
 	}
 
 	public Graph createGraph() {
-		Graph graph = new Graph();
 
+		Graph graph = new Graph();
 		if (barbasi)
 			graph.Barbasi(nodeAmt);
 		else
 			graph.randomFill(nodeAmt, prob);
-
 		return graph;
 	}
 
@@ -51,4 +52,33 @@ public class multipleGraphs {
 		return graphs;
 	}
 
+	public void subGraph(double p, boolean ran, int threadAmt) {
+		threadPool = Executors.newFixedThreadPool(threadAmt);
+		for (Graph graph : graphs) {
+			threadPool.submit(() -> {
+				graph.randomVac(p, ran);
+			});
+
+		}
+
+		threadPool.shutdown();
+		while (!threadPool.isTerminated()) {
+
+		}
+
+	}
+
+	public double totalSubgraphAvg() {
+		int subgraph = 0;
+		for (Graph graph : graphs)
+			subgraph += graph.getSubgraphs().size();
+		return subgraph / graphs.size();
+	}
+
+	public double largestSubgraphAvg() {
+		int subgraph = 0;
+		for (Graph graph : graphs)
+			subgraph += Collections.max(graph.getSubgraphs());
+		return subgraph / graphs.size();
+	}
 }
