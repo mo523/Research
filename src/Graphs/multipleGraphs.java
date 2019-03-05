@@ -12,6 +12,7 @@ public class multipleGraphs {
 	private int prob;
 	private int graphAmt;
 	private ExecutorService threadPool;
+	private double[] avgStats = new double[10];
 
 	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt) {
 		this.nodeAmt = nodeAmt;
@@ -80,6 +81,24 @@ public class multipleGraphs {
 		for (Graph graph : graphs)
 			subgraph += Collections.max(graph.getSubgraphs());
 		return (subgraph / graphs.size());
-		
+
+	}
+
+	public double[] getStats() {
+
+		for (int i = 0; i < 10; i++) {
+			{
+				for (Graph graph : graphs)
+					avgStats[i] += graph.getStats()[i];
+				avgStats[i] /= graphs.size();
+			}
+
+		}
+
+		threadPool.shutdown();
+		while (!threadPool.isTerminated()) {
+
+		}
+		return avgStats;
 	}
 }
