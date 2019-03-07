@@ -159,7 +159,9 @@ public class Program {
 	private static void barbashiFillMenu() {
 		System.out.println("\nHow many nodes?");
 		int nodeAmt = choiceValidator(1, Integer.MAX_VALUE);
-		graph.Barbasi(nodeAmt);
+		System.out.println("\nHow many edges per new node?");
+		int edgeAmt = choiceValidator(1, Integer.MAX_VALUE);
+		graph.Barbasi(nodeAmt, edgeAmt);
 	}
 
 	private static void saveMenu() {
@@ -185,7 +187,9 @@ public class Program {
 
 		boolean barbasi;
 		System.out.println("Enter number of nodes");
-		int nodes = kb.nextInt();
+		int nodes  =  choiceValidator(1, Integer.MAX_VALUE);
+		System.out.println("Enter number of edges per new node");
+		int edgeAmt  =  choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("\nHow would you like to fill these graphs?\n1. Barbashi-Albert\n2. Random");
 		int choice = choiceValidator(1, 2);
 		if (choice == 1)
@@ -194,19 +198,19 @@ public class Program {
 			barbasi = false;
 
 		System.out.println("Enter number of graphs");
-		int graphAmt = kb.nextInt();
+		int graphAmt =  choiceValidator(1, Integer.MAX_VALUE);
 
 		System.out.println("Enter number of threads");
-		int threads = kb.nextInt();
-		multipleGraphs multiple = new multipleGraphs(barbasi, graphAmt, nodes, threads);
+		int threads =   choiceValidator(1, Integer.MAX_VALUE);
+		multipleGraphs multiple = new multipleGraphs(barbasi, graphAmt, nodes, threads, edgeAmt);
 		multiple.execute();
 		return multiple;
 	}
 
-	public static Graph createGraph(int nodeAmt) {
+	public static Graph createGraph(int nodeAmt, int edgeAmt) {
 		Graph graph = new Graph();
 
-		graph.Barbasi(nodeAmt);
+		graph.Barbasi(nodeAmt, edgeAmt);
 
 		return graph;
 	}
@@ -216,12 +220,14 @@ public class Program {
 		int gAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("How many nodes?");
 		int nAmt = choiceValidator(1, Integer.MAX_VALUE);
+		System.out.println("How many edges per new node?");
+		int eAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("1. Barbasi\n2. Random");
 		int gGen = choiceValidator(1, 2);
 		for (int i = 0; i < gAmt; i++) {
 			Graph g = new Graph();
 			if (gGen == 1)
-				g.Barbasi(nAmt);
+				g.Barbasi(nAmt, eAmt);
 			else
 				g.randomFill(nAmt, 80);
 			stats = g.getStats();

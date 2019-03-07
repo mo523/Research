@@ -13,13 +13,14 @@ public class multipleGraphs {
 	private int graphAmt;
 	private ExecutorService threadPool;
 	private double[] avgStats = new double[10];
+	private int edgeAmt;
 
-	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt) {
+	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt,int edgeAmt) {
 		this.nodeAmt = nodeAmt;
 		this.graphAmt = graphAmt;
 		this.barbasi = barbasi;
 		threadPool = Executors.newFixedThreadPool(threadAmt);
-
+		this.edgeAmt=edgeAmt;
 	}
 
 	public void execute() {
@@ -43,7 +44,7 @@ public class multipleGraphs {
 
 		Graph graph = new Graph();
 		if (barbasi)
-			graph.Barbasi(nodeAmt);
+			graph.Barbasi(nodeAmt, edgeAmt);
 		else
 			graph.randomFill(nodeAmt, prob);
 		return graph;

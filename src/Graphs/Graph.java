@@ -46,11 +46,11 @@ public class Graph
 					addEdge(n, c);
 	}
 
-	public void Barbasi( int nodeAmt )
+	public void Barbasi( int nodeAmt,int edgeAmt )
 	{
 		ArrayList<Integer> probability;
 		int index;
-		for ( int i = 0; i < 3; i++ )
+		for ( int i = 0; i < edgeAmt; i++ )
 			nodes.put(i, new Node(i));
 
 		index = ran.nextInt(nodes.size());
@@ -58,12 +58,12 @@ public class Graph
 			if ( n.getID() != index )
 				addEdge(nodes.get(index), n);
 
-		for ( int nodeNumber = 3; nodeNumber < nodeAmt; nodeNumber++ )
+		for ( int nodeNumber = edgeAmt; nodeNumber < nodeAmt; nodeNumber++ )
 		{
 			Node n = new Node(nodeNumber);
 
 			probability = getNodeProbability();
-			for ( int edgeNumber = 0; edgeNumber < 3; edgeNumber++ )
+			for ( int edgeNumber = 0; edgeNumber < edgeAmt; edgeNumber++ )
 			{
 				if ( probability.size() - edgeNumber > 0 )
 					index = ran.nextInt(probability.size() - edgeNumber);
