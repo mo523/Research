@@ -25,8 +25,9 @@ public class Program
 		do
 		{
 			System.out.println("\nWhat would you like to do?");
-			System.out.println("0. Quit\n1. Create a new graph\n2. Import a graph \n3. Create multiple graphs");
-			choice = choiceValidator(0, 4);
+			System.out.println(
+					"0. Quit\n1. Create a new graph\n2. Import a graph \n3. Create multiple graphs\n5. Vaccination tests");
+			choice = choiceValidator(0, 5);
 			switch (choice)
 			{
 				case 1:
@@ -41,12 +42,64 @@ public class Program
 				case 4:
 					choice = 0;
 					tenTest();
+				case 5:
+					vaccMenu();
 				default:
 					break;
 			}
 			if (choice != 0)
 				graphMenu();
 		} while (choice != 0);
+	}
+
+	private static void vaccMenu()
+	{
+		graph = new Graph();
+		System.out.println("Node amount?");
+		int nAmt = kb.nextInt();
+		System.out.println("Connect probabilty (ER)");
+		double cp = kb.nextDouble();
+		System.out.println("Initial connection amount (BA)");
+		int ica = kb.nextInt();
+		System.out.println("Repeat amount?");
+		int ra = kb.nextInt();
+		System.out.println("Prob amount");
+		double pa = kb.nextDouble();
+		boolean er = true;
+
+		for (int i = 0; i < 2; i++)
+		{
+			graph = new Graph();
+			boolean ran = true;
+			if (er)
+				graph.randomFill(nAmt, cp);
+			else
+				graph.Barbasi(nAmt, ica);
+			HashSet<Tuple> edges = graph.getAllEdges();
+			int total = 0;
+
+			if (er)
+				System.out.println("Erdos Reyni");
+			else
+				System.out.println("Barbasi Albert");
+			for (int j = 0; j < 2; j++)
+			{
+				if (ran)
+					System.out.print("\tRandom Vaccinations:\t");
+				else
+					System.out.print("\tMax Friend Vaccinations:\t");
+				for (int k = 0; k < ra; k++)
+				{
+					graph = new Graph(edges);
+					graph.vaccinate(pa, ran);
+					total += Collections.max(graph.getSubgraphs());
+				}
+				System.out.println(total / ra);
+				ran = false;
+			}
+			er = false;
+		}
+
 	}
 
 	private static void multipleGraphMenu()
@@ -158,26 +211,12 @@ public class Program
 		boolean ran = choiceValidator(1, 2) == 1;
 		System.out.println("What % of peeps get vacced?");
 		double p = kb.nextDouble();
-		HashSet<Tuple> edges = graph.getAllEdges();
-		for (int j = 0; j < 2; j++)
-		{
-			double total = 0;
-			for (int i = 0; i < 10; i++)
-			{
-				Display.displayStats(graph.getStats());
-				graph.vaccinate(p, ran);
-				ArrayList<Integer> subgraphs = graph.getSubgraphs();
-				System.out.println("\nIteration " + (i + 1));
-				System.out.println("Total Subgraphs: " + subgraphs.size());
-				System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
-				total += Collections.max(subgraphs);
+		Display.displayStats(graph.getStats());
+		graph.vaccinate(p, ran);
+		ArrayList<Integer> subgraphs = graph.getSubgraphs();
+		System.out.println("Total Subgraphs: " + subgraphs.size());
+		System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
 
-				Display.displayStats(graph.getStats());
-				graph = new Graph(edges);
-			}
-			System.out.println(total / 10);
-			ran = !ran;
-		}
 	}
 
 	private static void randomFillMenu()

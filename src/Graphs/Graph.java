@@ -61,13 +61,13 @@ public class Graph
 		return nodes;
 	}
 
-	public void randomFill(int nodeAmt, int prob)
+	public void randomFill(int nodeAmt, double prob)
 	{
 		for (int i = 0; i < nodeAmt; i++)
 			nodes.put(i, new Node(i));
 		for (Node n : nodes.values())
 			for (Node c : nodes.values())
-				if (!c.equals(n) && ran.nextInt(prob) == 0)
+				if (!c.equals(n) && ran.nextDouble() <= prob)
 					addEdge(n, c);
 	}
 
@@ -106,9 +106,9 @@ public class Graph
 	public void vaccinate(double p, boolean ran)
 	{
 		Random random = new Random();
-		for (Node n : nodes.values())
+		for (int i = 0; i < nodes.size(); i++)
 			if (random.nextDouble() <= p)
-				quarNode(n, ran);
+				quarNode(nodes.get(i), ran);
 	}
 
 	public void quarNode(Node n, boolean ran)
