@@ -7,7 +7,7 @@ import java.util.*;
 
 public class SaveFunc
 {
-	public static Graph importFile( String fileName )
+	public static Graph importFile(String fileName)
 	{
 		Graph g = new Graph();
 		try
@@ -18,29 +18,30 @@ public class SaveFunc
 			{
 				String[] temp = kb.nextLine().split(" ");
 				nes.add(new Integer[temp.length]);
-				for ( int i = 0; i < temp.length; i++ )
+				for (int i = 0; i < temp.length; i++)
 					nes.get(nes.size() - 1)[i] = Integer.parseInt(temp[i]);
-			} while ( kb.hasNext() );
+			} while (kb.hasNext());
 
-			for ( Integer[] sa : nes )
+			for (Integer[] sa : nes)
 				g.addNode(sa[0]);
 
-			for ( Integer[] sa : nes )
+			for (Integer[] sa : nes)
 			{
 				Node n1 = g.getNodes().get(sa[0]);
-				for ( int i = 1; i < sa.length; i++ )
+				for (int i = 1; i < sa.length; i++)
 					g.addEdge(n1, g.getNodes().get(sa[i]));
 			}
 
 			kb.close();
-		} catch ( FileNotFoundException e )
+		}
+		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
 		}
 		return g;
 	}
 
-	public static Graph importSNAP( String fName )
+	public static Graph importSNAP(String fName)
 	{
 		Graph graph = new Graph();
 		Scanner kb = null;
@@ -53,17 +54,19 @@ public class SaveFunc
 				String[] in = kb.nextLine().split("\\s+");
 				int n1 = Integer.parseInt(in[0]);
 				int n2 = Integer.parseInt(in[1]);
-				if ( !graph.getNodes().containsKey(n1) )
+				if (!graph.getNodes().containsKey(n1))
 					graph.addNode(n1);
-				if ( !graph.getNodes().containsKey(n2) )
+				if (!graph.getNodes().containsKey(n2))
 					graph.addNode(n2);
 				graph.addEdge(n1, n2);
-			} while ( kb.hasNextLine() );
+			} while (kb.hasNextLine());
 
-		} catch ( FileNotFoundException e )
+		}
+		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
-		} finally
+		}
+		finally
 		{
 			kb.close();
 		}
@@ -71,7 +74,26 @@ public class SaveFunc
 		return graph;
 	}
 
-	public static void saveGraph( ArrayList<Double> afis, ArrayList<Double> gfis, String fName, double[] stats )
+	public static void saveTemp(HashSet<Tuple> edges, String fName)
+	{
+		fName = shortcut(fName);
+		PrintWriter file;
+		try
+		{
+			file = new PrintWriter(fName + "temp");
+			for (Tuple t : edges)
+				file.println(t.getN1() + " " + t.getN2());
+			file.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void saveGraph(ArrayList<Double> afis, ArrayList<Double> gfis, String fName, double[] stats)
 	{
 		fName = shortcut(fName);
 		PrintWriter file;
@@ -90,16 +112,17 @@ public class SaveFunc
 			file.println("GFI:\t\t\t" + stats[9]);
 			file.close();
 
-			file = new PrintWriter(( fName + "_afis" ));
-			for ( double d : afis )
+			file = new PrintWriter((fName + "_afis"));
+			for (double d : afis)
 				file.println(d);
 			file.close();
 
-			file = new PrintWriter(( fName + "_gfis" ));
-			for ( double d : gfis )
+			file = new PrintWriter((fName + "_gfis"));
+			for (double d : gfis)
 				file.println(d);
 			file.close();
-		} catch ( FileNotFoundException e )
+		}
+		catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,9 +130,9 @@ public class SaveFunc
 
 	}
 
-	private static String shortcut( String fName )
+	private static String shortcut(String fName)
 	{
-		if ( fName.charAt(0) == ',' )
+		if (fName.charAt(0) == ',')
 		{
 			String m = "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs";
 			fName = fName.replace(',', '/');
