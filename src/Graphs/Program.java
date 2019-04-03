@@ -66,10 +66,11 @@ public class Program
 		int ra = kb.nextInt();
 		System.out.println("Prob amount");
 		double pa = kb.nextDouble();
-		boolean er = true;
 
 		for (int n = 0; n < 5; n++)
 		{
+
+			boolean er = true;
 			System.out.println("\nNode Amount: " + nAmt + "\n------------");
 			for (int i = 0; i < 2; i++)
 			{
