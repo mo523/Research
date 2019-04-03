@@ -55,8 +55,9 @@ public class Program
 	private static void vaccMenu()
 	{
 		graph = new Graph();
-		System.out.println("Node amount?");
-		int nAmt = kb.nextInt();
+		// System.out.println("Node amount?");
+		// int nAmt = kb.nextInt();
+		int nAmt = 1000;
 		System.out.println("Connect probabilty (ER)");
 		double cp = kb.nextDouble();
 		System.out.println("Initial connection amount (BA)");
@@ -67,37 +68,42 @@ public class Program
 		double pa = kb.nextDouble();
 		boolean er = true;
 
-		for (int i = 0; i < 2; i++)
+		for (int n = 0; n < 5; n++)
 		{
-			graph = new Graph();
-			boolean ran = true;
-			if (er)
-				graph.randomFill(nAmt, cp);
-			else
-				graph.Barbasi(nAmt, ica);
-			HashSet<Tuple> edges = graph.getAllEdges();
-
-			if (er)
-				System.out.println("Erdos Reyni");
-			else
-				System.out.println("Barbasi Albert");
-			for (int j = 0; j < 2; j++)
+			System.out.println("\nNode Amount: " + nAmt + "\n------------");
+			for (int i = 0; i < 2; i++)
 			{
-				int total = 0;
-				if (ran)
-					System.out.print("\tRandom Vaccinations:\t\t");
+				graph = new Graph();
+				boolean ran = true;
+				if (er)
+					graph.randomFill(nAmt, cp);
 				else
-					System.out.print("\tMax Friend Vaccinations:\t");
-				for (int k = 0; k < ra; k++)
+					graph.Barbasi(nAmt, ica);
+				HashSet<Tuple> edges = graph.getAllEdges();
+
+				if (er)
+					System.out.println("Erdos Reyni");
+				else
+					System.out.println("Barbasi Albert");
+				for (int j = 0; j < 2; j++)
 				{
-					graph = new Graph(edges);
-					graph.vaccinate(pa, ran);
-					total += Collections.max(graph.getSubgraphs());
+					int total = 0;
+					if (ran)
+						System.out.print("\tRandom Vaccinations:\t\t");
+					else
+						System.out.print("\tMax Friend Vaccinations:\t");
+					for (int k = 0; k < ra; k++)
+					{
+						graph = new Graph(edges);
+						graph.vaccinate(pa, ran);
+						total += Collections.max(graph.getSubgraphs());
+					}
+					System.out.println(total / ra);
+					ran = false;
 				}
-				System.out.println(total / ra);
-				ran = false;
+				er = false;
 			}
-			er = false;
+			nAmt *= 10;
 		}
 
 	}
