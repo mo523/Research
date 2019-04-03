@@ -76,7 +76,6 @@ public class Program
 			else
 				graph.Barbasi(nAmt, ica);
 			HashSet<Tuple> edges = graph.getAllEdges();
-			int total = 0;
 
 			if (er)
 				System.out.println("Erdos Reyni");
@@ -84,8 +83,9 @@ public class Program
 				System.out.println("Barbasi Albert");
 			for (int j = 0; j < 2; j++)
 			{
+				int total = 0;
 				if (ran)
-					System.out.print("\tRandom Vaccinations:\t");
+					System.out.print("\tRandom Vaccinations:\t\t");
 				else
 					System.out.print("\tMax Friend Vaccinations:\t");
 				for (int k = 0; k < ra; k++)
@@ -207,13 +207,20 @@ public class Program
 
 	private static void subgraphMenu()
 	{
-		System.out.println("1. Random\n2. Friends");
-		boolean ran = choiceValidator(1, 2) == 1;
 		System.out.println("What % of peeps get vacced?");
 		double p = kb.nextDouble();
-		Display.displayStats(graph.getStats());
-		graph.vaccinate(p, ran);
-		ArrayList<Integer> subgraphs = graph.getSubgraphs();
+		ArrayList<Integer> subgraphs;
+
+		System.out.println("Random");
+		graph.vaccinate(p, true);
+		subgraphs = graph.getSubgraphs();
+		System.out.println("Total Subgraphs: " + subgraphs.size());
+		System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
+
+		graph = new Graph(graph.getAllEdges());
+		System.out.println("MAx friend");
+		graph.vaccinate(p, false);
+		subgraphs = graph.getSubgraphs();
 		System.out.println("Total Subgraphs: " + subgraphs.size());
 		System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
 
@@ -224,9 +231,7 @@ public class Program
 		System.out.println("\nHow many nodes?");
 		int nodeAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("\nConnection Probability?");
-		System.out.println("As 1/n  (1/10 = .1, 1/80 = .0125, etc.)");
-		int prob = choiceValidator(1, Integer.MAX_VALUE);
-		graph.randomFill(nodeAmt, prob);
+		graph.randomFill(nodeAmt, kb.nextDouble());
 
 	}
 
