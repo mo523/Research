@@ -1,59 +1,55 @@
 package Graphs;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class Program
-{
+public class Program {
 	static ArrayList<Graph> graphs = new ArrayList<Graph>();
 	static ExecutorService threadPool;
 	static Scanner kb;
 	static Graph graph;
 	static double[] stats;
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		kb = new Scanner(System.in);
 		initialMenu();
 		kb.close();
 	}
 
-	private static void initialMenu()
-	{
+	private static void initialMenu() {
 		System.out.println("Welcome to the graphing thingy!");
 		int choice = 0;
-		do
-		{
+		do {
 			System.out.println("\nWhat would you like to do?");
 			System.out.println(
 					"0. Quit\n1. Create a new graph\n2. Import a graph \n3. Create multiple graphs\n5. Vaccination tests");
 			choice = choiceValidator(0, 5);
-			switch (choice)
-			{
-				case 1:
-					newGraphMenu();
-					break;
-				case 2:
-					importMenu();
-					break;
-				case 3:
-					multipleGraphMenu();
-					break;
-				case 4:
-					choice = 0;
-					tenTest();
-				case 5:
-					vaccMenu();
-				default:
-					break;
+			switch (choice) {
+			case 1:
+				newGraphMenu();
+				break;
+			case 2:
+				importMenu();
+				break;
+			case 3:
+				multipleGraphMenu();
+				break;
+			case 4:
+				choice = 0;
+				tenTest();
+			case 5:
+				vaccMenu();
+			default:
+				break;
 			}
 			if (choice != 0)
 				graphMenu();
 		} while (choice != 0);
 	}
 
-	private static void vaccMenu()
-	{
+	private static void vaccMenu() {
 		graph = new Graph();
 		// System.out.println("Node amount?");
 		// int nAmt = kb.nextInt();
@@ -67,13 +63,11 @@ public class Program
 		System.out.println("Prob amount");
 		double pa = kb.nextDouble();
 
-		for (int n = 0; n < 5; n++)
-		{
+		for (int n = 0; n < 5; n++) {
 
 			boolean er = true;
 			System.out.println("\nNode Amount: " + nAmt + "\n------------");
-			for (int i = 0; i < 2; i++)
-			{
+			for (int i = 0; i < 2; i++) {
 				graph = new Graph();
 				boolean ran = true;
 				if (er)
@@ -86,15 +80,13 @@ public class Program
 					System.out.println("Erdos Reyni");
 				else
 					System.out.println("Barbasi Albert");
-				for (int j = 0; j < 2; j++)
-				{
+				for (int j = 0; j < 2; j++) {
 					int total = 0;
 					if (ran)
 						System.out.print("\tRandom Vaccinations:\t\t");
 					else
 						System.out.print("\tMax Friend Vaccinations:\t");
-					for (int k = 0; k < ra; k++)
-					{
+					for (int k = 0; k < ra; k++) {
 						graph = new Graph(edges);
 						graph.vaccinate(pa, ran);
 						total += Collections.max(graph.getSubgraphs());
@@ -109,46 +101,73 @@ public class Program
 
 	}
 
-	private static void multipleGraphMenu()
-	{
+	private static void multipleGraphMenu() {
 
 		int choice = 0;
 		multipleGraphs graphs = multipleGraph();
-		do
-		{
+		do {
 			System.out.println("\nWhat would you like to do?");
 			System.out
 					.println("0. Quit\n1. Create new graphs\n2. View Avg Stats \n3. Save graphs \n4. Vaccinate Graphs");
-			choice = choiceValidator(0, 4);
-			switch (choice)
-			{
-				case 1:
-					graphs = multipleGraph();
-					break;
-				case 2:
-					Display.displayStats(graphs.getStats());
-				case 3:
-					break;
-				case 4:
-					System.out.println("How many threads?");
-					int threadAmt = kb.nextInt();
-					System.out.println(graphs.getGraphs().size());
-					System.out.println("1. Random\n2. Friends");
-					boolean ran = choiceValidator(1, 2) == 1;
-					System.out.println("What % of peeps get vacced?");
-					double p = kb.nextDouble();
-					graphs.subGraph(p, ran, threadAmt);
-					System.out.println("\nAvg Total Subgraphs: " + graphs.totalSubgraphAvg());
-					System.out.println("Avg Biggest Subgraph: " + graphs.largestSubgraphAvg());
+			choice = choiceValidator(0, 5);
+			switch (choice) {
+			case 1:
+				graphs = multipleGraph();
+				break;
+			case 2:
+				Display.displayStats(graphs.getStats());
+			case 3:
+				break;
+			case 4:
+				System.out.println("How many threads?");
+				int threadAmt = kb.nextInt();
+				System.out.println(graphs.getGraphs().size());
+				System.out.println("1. Random\n2. Friends");
+				boolean ran = choiceValidator(1, 2) == 1;
+				System.out.println("What % of peeps get vacced?");
+				double p = kb.nextDouble();
+				graphs.subGraph(p, ran, threadAmt);
+				System.out.println("\nAvg Total Subgraphs: " + graphs.totalSubgraphAvg());
+				System.out.println("Avg Biggest Subgraph: " + graphs.largestSubgraphAvg());
+			case 5:
+				ArrayList<String> results = new ArrayList<String>();
+				System.out.println("How many tests?");
+				int numTests = kb.nextInt();
+				System.out.println("How many threads?");
+				threadAmt = kb.nextInt();
+				System.out.println(graphs.getGraphs().size());
+				System.out.println("1. Random\n2. Friends");
+				ran = choiceValidator(1, 2) == 1;
+				System.out.println("What % of peeps get vacced?");
+				p = kb.nextDouble();
+				for (int i = 0; i < numTests; i++) {
+					multipleGraphs testCases = new multipleGraphs(graphs);
+					testCases.subGraph(p, ran, threadAmt);
+					for (Graph g : testCases.getGraphs())
+						results.add(g.getSubgraphs().size() + " " + Collections.max(g.getSubgraphs()) + " ");
 
-				default:
-					break;
+					results.add("* ");
+
+				}
+
+				try {
+					FileWriter fileWriter = new FileWriter("C:\\Users\\sam\\OneDrive\\Documents\\Yoel\\Tests\\test");
+					for (String s : results) {
+						fileWriter.write(s);
+					}
+					fileWriter.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			default:
+				break;
 			}
 		} while (choice != 0);
 	}
 
-	private static void newGraphMenu()
-	{
+	private static void newGraphMenu() {
 		int choice;
 		graph = new Graph();
 		stats = null;
@@ -160,60 +179,54 @@ public class Program
 			barbashiFillMenu();
 	}
 
-	private static void importMenu()
-	{
+	private static void importMenu() {
 		System.out.println("\nWhat type of file?\n1. Moshe's\n2. SNAP");
 		int choice = choiceValidator(1, 2);
 		System.out.println("File name?");
 		String fName = kb.nextLine();
-		switch (choice)
-		{
-			case 1:
-				graph = SaveFunc.importFile(fName);
-				break;
-			case 2:
-				graph = SaveFunc.importSNAP(fName);
-				break;
+		switch (choice) {
+		case 1:
+			graph = SaveFunc.importFile(fName);
+			break;
+		case 2:
+			graph = SaveFunc.importSNAP(fName);
+			break;
 		}
 		stats = graph.getStats();
 		Display.displayStats(stats);
 		SaveFunc.saveGraph(graph.getAfis(), graph.getGfis(), fName, stats);
 	}
 
-	private static void graphMenu()
-	{
+	private static void graphMenu() {
 		int choice;
-		do
-		{
+		do {
 			System.out.println("\nWhat would you like to do with the graph?");
 			System.out.println(
 					"0. Main Menu\n1. View graph & stats\n2. View stats only\n3. Save Graph\n4. Vaccinate graph");
 			choice = choiceValidator(0, 10);
-			switch (choice)
-			{
-				case 1:
-					Display.displayGraph(graph.getNodes());
-				case 2:
-					if (stats == null)
-						stats = graph.getStats();
-					Display.displayStats(graph.getStats());
-					break;
-				case 3:
-					saveMenu();
-					break;
-				case 4:
-					subgraphMenu();
-					break;
-				case 5:
-					SaveFunc.saveTemp(graph.getAllEdges(), ",");
-				default:
-					break;
+			switch (choice) {
+			case 1:
+				Display.displayGraph(graph.getNodes());
+			case 2:
+				if (stats == null)
+					stats = graph.getStats();
+				Display.displayStats(graph.getStats());
+				break;
+			case 3:
+				saveMenu();
+				break;
+			case 4:
+				subgraphMenu();
+				break;
+			case 5:
+				SaveFunc.saveTemp(graph.getAllEdges(), ",");
+			default:
+				break;
 			}
 		} while (choice != 0);
 	}
 
-	private static void subgraphMenu()
-	{
+	private static void subgraphMenu() {
 		System.out.println("What % of peeps get vacced?");
 		double p = kb.nextDouble();
 		ArrayList<Integer> subgraphs;
@@ -233,8 +246,7 @@ public class Program
 
 	}
 
-	private static void randomFillMenu()
-	{
+	private static void randomFillMenu() {
 		System.out.println("\nHow many nodes?");
 		int nodeAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("\nConnection Probability?");
@@ -242,8 +254,7 @@ public class Program
 
 	}
 
-	private static void barbashiFillMenu()
-	{
+	private static void barbashiFillMenu() {
 		System.out.println("\nHow many nodes?");
 		int nodeAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("\nHow many edges per new node?");
@@ -251,8 +262,7 @@ public class Program
 		graph.Barbasi(nodeAmt, edgeAmt);
 	}
 
-	private static void saveMenu()
-	{
+	private static void saveMenu() {
 		System.out.println("Filename and location?");
 		String fName = kb.nextLine();
 		if (stats == null)
@@ -260,11 +270,9 @@ public class Program
 		SaveFunc.saveGraph(graph.getAfis(), graph.getGfis(), fName, stats);
 	}
 
-	private static int choiceValidator(int low, int high)
-	{
+	private static int choiceValidator(int low, int high) {
 		int choice = low;
-		do
-		{
+		do {
 			if (choice < low || choice > high)
 				System.out.println("\nInvalid choice!\n" + low + " - " + high);
 			choice = kb.nextInt();
@@ -273,8 +281,7 @@ public class Program
 		return choice;
 	}
 
-	public static multipleGraphs multipleGraph()
-	{
+	public static multipleGraphs multipleGraph() {
 
 		boolean barbasi;
 		System.out.println("Enter number of nodes");
@@ -298,8 +305,7 @@ public class Program
 		return multiple;
 	}
 
-	public static Graph createGraph(int nodeAmt, int edgeAmt)
-	{
+	public static Graph createGraph(int nodeAmt, int edgeAmt) {
 		Graph graph = new Graph();
 
 		graph.Barbasi(nodeAmt, edgeAmt);
@@ -307,8 +313,7 @@ public class Program
 		return graph;
 	}
 
-	private static void tenTest()
-	{
+	private static void tenTest() {
 		System.out.println("How many Graphs?");
 		int gAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("How many nodes?");
@@ -317,8 +322,7 @@ public class Program
 		int eAmt = choiceValidator(1, Integer.MAX_VALUE);
 		System.out.println("1. Barbasi\n2. Random");
 		int gGen = choiceValidator(1, 2);
-		for (int i = 0; i < gAmt; i++)
-		{
+		for (int i = 0; i < gAmt; i++) {
 			Graph g = new Graph();
 			if (gGen == 1)
 				g.Barbasi(nAmt, eAmt);
