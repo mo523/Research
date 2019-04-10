@@ -9,22 +9,23 @@ public class multipleGraphs {
 	private ArrayList<Graph> graphs = new ArrayList<Graph>();
 	private int nodeAmt;
 	private boolean barbasi;
-	private int prob;
+	private double prob;
 	private int graphAmt;
 	private ExecutorService threadPool;
 	private double[] avgStats = new double[10];
 	private int edgeAmt;
 
-	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt, int edgeAmt) {
+	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt, int edgeAmt, double ESProb) {
 		this.nodeAmt = nodeAmt;
 		this.graphAmt = graphAmt;
 		this.barbasi = barbasi;
 		threadPool = Executors.newFixedThreadPool(threadAmt);
 		this.edgeAmt = edgeAmt;
+		this.prob = ESProb;
 	}
-	
+
 	public multipleGraphs(multipleGraphs graphs) {
-		for(Graph g:graphs.getGraphs())
+		for (Graph g : graphs.getGraphs())
 			this.graphs.add(new Graph(g.getAllEdges()));
 	}
 

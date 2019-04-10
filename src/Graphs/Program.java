@@ -116,6 +116,7 @@ public class Program {
 				break;
 			case 2:
 				Display.displayStats(graphs.getStats());
+				break;
 			case 3:
 				break;
 			case 4:
@@ -143,6 +144,7 @@ public class Program {
 				for (int i = 0; i < numTests; i++) {
 					multipleGraphs testCases = new multipleGraphs(graphs);
 					testCases.subGraph(p, ran, threadAmt);
+					System.out.println("test: " + i);
 					for (Graph g : testCases.getGraphs())
 						results.add(g.getSubgraphs().size() + " " + Collections.max(g.getSubgraphs()) + " ");
 
@@ -282,7 +284,7 @@ public class Program {
 	}
 
 	public static multipleGraphs multipleGraph() {
-
+		double ESProb = 0;
 		boolean barbasi;
 		System.out.println("Enter number of nodes");
 		int nodes = choiceValidator(1, Integer.MAX_VALUE);
@@ -292,15 +294,18 @@ public class Program {
 		int choice = choiceValidator(1, 2);
 		if (choice == 1)
 			barbasi = true;
-		else
+		else {
 			barbasi = false;
+			System.out.println("\nConnection Probability?");
+			ESProb = kb.nextDouble();
+		}
 
 		System.out.println("Enter number of graphs");
 		int graphAmt = choiceValidator(1, Integer.MAX_VALUE);
 
 		System.out.println("Enter number of threads");
 		int threads = choiceValidator(1, Integer.MAX_VALUE);
-		multipleGraphs multiple = new multipleGraphs(barbasi, graphAmt, nodes, threads, edgeAmt);
+		multipleGraphs multiple = new multipleGraphs(barbasi, graphAmt, nodes, threads, edgeAmt, ESProb);
 		multiple.execute();
 		return multiple;
 	}
