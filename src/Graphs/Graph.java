@@ -103,12 +103,22 @@ public class Graph
 		}
 	}
 
-	public void vaccinate(double p, boolean ran)
+	public void oldVaccinate(double p, boolean ran)
 	{
 		Random random = new Random();
 		for (int i = 0; i < nodes.size(); i++)
 			if (random.nextDouble() <= p)
 				quarNode(nodes.get(i), ran);
+	}
+	
+	public void vaccinate(double p, boolean ran) {
+		LinkedList<Integer> nodeNumbers= new LinkedList<>();
+		for(int i : nodes.keySet())
+			nodeNumbers.add(i);
+		Collections.shuffle(nodeNumbers);
+		
+		for(int i=0;i<p*nodeNumbers.size();i++)
+			quarNode(nodes.get(nodeNumbers.pop()), ran);
 	}
 
 	public void quarNode(Node n, boolean ran)

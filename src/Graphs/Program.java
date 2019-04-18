@@ -130,6 +130,7 @@ public class Program {
 				graphs.subGraph(p, ran, threadAmt);
 				System.out.println("\nAvg Total Subgraphs: " + graphs.totalSubgraphAvg());
 				System.out.println("Avg Biggest Subgraph: " + graphs.largestSubgraphAvg());
+				break;
 			case 5:
 				ArrayList<String> results = new ArrayList<String>();
 				System.out.println("How many tests?");
