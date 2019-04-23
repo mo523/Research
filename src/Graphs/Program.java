@@ -13,9 +13,14 @@ public class Program
 
 	public static void main(String[] args)
 	{
-		kb = new Scanner(System.in);
-		initialMenu();
-		kb.close();
+		if (args.length == 8)
+			singleThreadedTests(args);
+		else
+		{
+			kb = new Scanner(System.in);
+			initialMenu();
+			kb.close();
+		}
 	}
 
 	// Menus
@@ -120,6 +125,15 @@ public class Program
 		int maxConnectionAmount = choiceValidator("Maximum connection", 1, Integer.MAX_VALUE);
 		double vacPercent = choiceValidator("Percent of population that gets vaccinated?", 0d, 1d);
 
+		singleThreadedTests(repeatOnNew, repeatOnReload, initalNodeAmount, maxNodeAmount, increaseAmount,
+				initialConnectionAmount, maxConnectionAmount, vacPercent);
+
+	}
+
+	private static void singleThreadedTests(int repeatOnNew, int repeatOnReload, int initalNodeAmount,
+			int maxNodeAmount, int increaseAmount, int initialConnectionAmount, int maxConnectionAmount,
+			double vacPercent)
+	{
 		for (int nodeAmt = initalNodeAmount; nodeAmt <= maxNodeAmount; nodeAmt += increaseAmount)
 		{
 			for (int connectionAmount = initialConnectionAmount; connectionAmount <= maxConnectionAmount; connectionAmount++)
@@ -147,7 +161,13 @@ public class Program
 						"Biggest friend subgraph: " + (totalBiggestFriendSubgraph / repeatOnNew / repeatOnReload));
 			}
 		}
+	}
 
+	private static void singleThreadedTests(String[] args)
+	{
+		singleThreadedTests(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]),
+				Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]),
+				Integer.parseInt(args[6]), Double.parseDouble(args[0]));
 	}
 
 	// Multiple multithreaded menus
