@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class multipleGraphs {
+public class multipleGraphs
+{
 	private ArrayList<Graph> graphs = new ArrayList<Graph>();
 	private int nodeAmt;
 	private boolean barbasi;
@@ -15,7 +16,8 @@ public class multipleGraphs {
 	private double[] avgStats = new double[10];
 	private int edgeAmt;
 
-	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt, int edgeAmt, double ESProb) {
+	public multipleGraphs(boolean barbasi, int graphAmt, int nodeAmt, int threadAmt, int edgeAmt, double ESProb)
+	{
 		this.nodeAmt = nodeAmt;
 		this.graphAmt = graphAmt;
 		this.barbasi = barbasi;
@@ -24,56 +26,58 @@ public class multipleGraphs {
 		this.prob = ESProb;
 	}
 
-	public multipleGraphs(multipleGraphs graphs) {
+	public multipleGraphs(multipleGraphs graphs)
+	{
 		for (Graph g : graphs.getGraphs())
-			this.graphs.add(new Graph(g.getAllEdges()));
+			this.graphs.add(new Graph());
+		// this.graphs.add(new Graph(g.getAllEdges()));
 	}
 
-	public void execute() {
+	public void execute()
+	{
 		for (int i = 0; i < graphAmt; i++)
-			threadPool.submit(() -> {
-				graphs.add(createGraph());
-			});
+			threadPool.submit(() -> { graphs.add(createGraph()); });
 		threadPool.shutdown();
-		while (!threadPool.isTerminated())
-			;
+		while (!threadPool.isTerminated());
 		System.out.println("Graphs Created!!");
 
 	}
 
-	public Graph createGraph() {
+	public Graph createGraph()
+	{
 		Graph graph = new Graph();
 		if (barbasi)
-			graph.Barbasi(nodeAmt, edgeAmt);
+			graph.randomFill(false, nodeAmt, edgeAmt);
 		else
-			graph.randomFill(nodeAmt, prob);
+			graph.randomFill(true, nodeAmt, prob);
 		return graph;
 	}
 
-	public ArrayList<Graph> getGraphs() {
+	public ArrayList<Graph> getGraphs()
+	{
 		return graphs;
 	}
 
-	public void subGraph(double p, boolean ran, int threadAmt) {
+	public void subGraph(double p, boolean ran, int threadAmt)
+	{
 		threadPool = Executors.newFixedThreadPool(threadAmt);
 		for (Graph graph : graphs)
-			threadPool.submit(() -> {
-				graph.vaccinate(p, ran);
-			});
+			threadPool.submit(() -> { graph.vaccinate(p, ran); });
 
 		threadPool.shutdown();
-		while (!threadPool.isTerminated())
-			;
+		while (!threadPool.isTerminated());
 	}
 
-	public double totalSubgraphAvg() {
+	public double totalSubgraphAvg()
+	{
 		int subgraph = 0;
 		for (Graph graph : graphs)
 			subgraph += graph.getSubgraphs().size();
 		return subgraph / graphs.size();
 	}
 
-	public double largestSubgraphAvg() {
+	public double largestSubgraphAvg()
+	{
 		int subgraph = 0;
 		for (Graph graph : graphs)
 			subgraph += Collections.max(graph.getSubgraphs());
@@ -81,21 +85,23 @@ public class multipleGraphs {
 
 	}
 
-	public double[] getStats() {
+	public double[] getStats()
+	{
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++)
+		{
 			for (Graph graph : graphs)
 				avgStats[i] += graph.getStats()[i];
 			avgStats[i] /= graphs.size();
 		}
 
 		threadPool.shutdown();
-		while (!threadPool.isTerminated())
-			;
+		while (!threadPool.isTerminated());
 		return avgStats;
 	}
 
-	public void saveStats() {
+	public void saveStats()
+	{
 
 	}
 }

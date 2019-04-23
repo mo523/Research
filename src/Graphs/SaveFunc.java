@@ -3,55 +3,33 @@ package Graphs;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Scanner;
 
 public class SaveFunc
 {
-	public static Graph importFile(String fileName)
-	{
-		Graph g = new Graph();
-		try
-		{
-			Scanner kb = new Scanner(new File(shortcut(fileName)));
-			ArrayList<Integer[]> nes = new ArrayList<>();
-			do
-			{
-				String[] temp = kb.nextLine().split(" ");
-				nes.add(new Integer[temp.length]);
-				for (int i = 0; i < temp.length; i++)
-					nes.get(nes.size() - 1)[i] = Integer.parseInt(temp[i]);
-			} while (kb.hasNext());
 
-			for (Integer[] sa : nes)
-				g.addNode(sa[0]);
-
-			for (Integer[] sa : nes)
-			{
-				Node n1 = g.getNodes().get(sa[0]);
-				for (int i = 1; i < sa.length; i++)
-					g.addEdge(n1, g.getNodes().get(sa[i]));
-			}
-
-			kb.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		return g;
-	}
-
-	public static Graph importSNAP(String fName)
+	public static Graph importGraph()
 	{
 		Graph graph = new Graph();
-		Scanner kb = null;
-		try
+		Scanner kb = new Scanner(System.in);
+
+		String fName;
+		do
 		{
-			kb = new Scanner(new File(shortcut(fName)));
+			fName = shortcut(kb.nextLine());
+		} while (!Files.exists(Path.of(fName)));
+		kb.close();
+		
+		try (Scanner file = new Scanner(new File(fName));)
+		{
 
 			do
 			{
-				String[] in = kb.nextLine().split("\\s+");
+				String[] in = file.nextLine().split("\\s+");
 				int n1 = Integer.parseInt(in[0]);
 				int n2 = Integer.parseInt(in[1]);
 				if (!graph.getNodes().containsKey(n1))
@@ -65,10 +43,6 @@ public class SaveFunc
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			kb.close();
 		}
 
 		return graph;
@@ -127,6 +101,16 @@ public class SaveFunc
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	public static void saveMenu(Graph graph)
+	{
+		Scanner kb = new Scanner(System.in);
+		System.out.println("Filename and location?");
+		String fName = kb.nextLine();
+		kb.close();
+		SaveFunc.saveGraph(graph.getAfis(), graph.getGfis(), fName, graph.getStats());
 
 	}
 

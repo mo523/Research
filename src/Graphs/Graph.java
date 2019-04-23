@@ -7,32 +7,14 @@ public class Graph
 {
 	private Random ran = new Random();
 	private HashMap<Integer, Node> nodes = new HashMap<>();
-	private int edgeCount = 0;
 	private ArrayList<Double> afis;
 	private ArrayList<Double> gfis;
-	private boolean colored = false;
 	private HashSet<Tuple> allEdges = new HashSet<>();
+	private static double[] stats;
 
-	public Graph()
+	public Node addNode(int ID)
 	{
-
-	}
-
-	public Graph(HashSet<Tuple> allEdges)
-	{
-		// this.allEdges = allEdges;
-
-		for (Tuple t : allEdges)
-		{
-			int n1 = t.getN1();
-			int n2 = t.getN2();
-			if (!nodes.containsKey(n1))
-				addNode(n1);
-			if (!nodes.containsKey(n2))
-				addNode(n2);
-			addEdge(n1, n2);
-		}
-
+		return nodes.putIfAbsent(ID, new Node(ID));
 	}
 
 	public void addEdge(Node n1, Node n2)
@@ -41,12 +23,6 @@ public class Graph
 		allEdges.add(t);
 		n1.addEdge(n2);
 		n2.addEdge(n1);
-		edgeCount++;
-	}
-
-	public void addNode(int ID)
-	{
-		nodes.put(ID, new Node(ID));
 	}
 
 	public void addEdge(int k1, int k2)
@@ -56,12 +32,39 @@ public class Graph
 		addEdge(n1, n2);
 	}
 
+	public void rebuildGraph()
+	{
+		for (Tuple t : allEdges)
+		{
+			int k1 = t.getN1();
+			int k2 = t.getN2();
+			if (!nodes.containsKey(k1))
+				addNode(k1);
+			if (!nodes.containsKey(k2))
+				addNode(k2);
+			Node n1 = nodes.get(k1);
+			Node n2 = nodes.get(k2);
+			n1.addEdge(n2);
+			n2.addEdge(n1);
+		}
+
+	}
+
 	public HashMap<Integer, Node> getNodes()
 	{
 		return nodes;
 	}
 
-	public void randomFill(int nodeAmt, double prob)
+	public void randomFill(boolean er, int nodeAmt, double prob)
+	{
+		if (er)
+			fillER(nodeAmt, prob);
+		else
+			fillBA(nodeAmt, (int) prob);
+
+	}
+
+	private void fillER(int nodeAmt, double prob)
 	{
 		for (int i = 0; i < nodeAmt; i++)
 			nodes.put(i, new Node(i));
@@ -71,7 +74,7 @@ public class Graph
 					addEdge(n, c);
 	}
 
-	public void Barbasi(int nodeAmt, int edgeAmt)
+	private void fillBA(int nodeAmt, int edgeAmt)
 	{
 		ArrayList<Integer> probability;
 		int index;
@@ -103,25 +106,17 @@ public class Graph
 		}
 	}
 
-	public void oldVaccinate(double p, boolean ran)
+	public void vaccinate(double prob, boolean ran)
 	{
-		Random random = new Random();
-		for (int i = 0; i < nodes.size(); i++)
-			if (random.nextDouble() <= p)
-				quarNode(nodes.get(i), ran);
-	}
-	
-	public void vaccinate(double p, boolean ran) {
-		LinkedList<Integer> nodeNumbers= new LinkedList<>();
-		for(int i : nodes.keySet())
-			nodeNumbers.add(i);
-		Collections.shuffle(nodeNumbers);
-		
-		for(int i=0;i<p*nodeNumbers.size();i++)
-			quarNode(nodes.get(nodeNumbers.pop()), ran);
+		ArrayList<Node> tempNodeList = new ArrayList<>();
+		for (Node n : nodes.values())
+			tempNodeList.add(n);
+		Collections.shuffle(tempNodeList);
+		int vacAmt = (int) (prob * tempNodeList.size());
+		tempNodeList.stream().limit(vacAmt).forEach(n -> quarNode(n, ran));
 	}
 
-	public void quarNode(Node n, boolean ran)
+	private void quarNode(Node n, boolean ran)
 	{
 		if (n != null)
 		{
@@ -142,18 +137,12 @@ public class Graph
 				m.resetEdges();
 			}
 		}
-	}
-
-	private void resetColors()
-	{
-		for (Node n : nodes.values())
-			n.uncolor();
+		else
+			System.err.println("Error! vaccinating a null node for some reason");
 	}
 
 	public ArrayList<Integer> getSubgraphs()
 	{
-		if (colored)
-			resetColors();
 		ArrayList<Integer> subgraphs = new ArrayList<>();
 		Queue<Node> q = new LinkedList<>();
 		for (Node n : nodes.values())
@@ -176,7 +165,8 @@ public class Graph
 				subgraphs.add(total);
 			}
 		}
-		colored = true;
+
+		nodes.values().forEach(n -> n.uncolor());
 		Collections.sort(subgraphs);
 		return subgraphs;
 	}
@@ -190,12 +180,12 @@ public class Graph
 	}
 
 	/**
-	 * @return Integer of total edge count Calculated by iterating over all nodes
-	 * and getting their edge count which is calculated by edges.Size()
+	 * @return Integer of total edge count which is calculated by the tuple
+	 * collection
 	 */
 	public int getTotalEdgeCount()
 	{
-		return edgeCount;
+		return allEdges.size();
 	}
 
 	public double[] getStats()
@@ -206,7 +196,7 @@ public class Graph
 		Node max = min;
 		double afi = 0;
 		double gfi = 0;
-		double m = Math.pow(edgeCount, -1);
+		double m = Math.pow(allEdges.size(), -1);
 		double sum1 = 0;
 		double sum2 = 0;
 		double sum3 = 0;
@@ -245,12 +235,12 @@ public class Graph
 		gfi /= nodeCount;
 
 		stats[0] = nodeCount;
-		stats[1] = edgeCount;
+		stats[1] = allEdges.size();
 		stats[2] = max.getID();
 		stats[3] = max.getEdgeCount();
 		stats[4] = min.getID();
 		stats[5] = min.getEdgeCount();
-		stats[6] = (double) edgeCount / nodeCount * 2;
+		stats[6] = (double) allEdges.size() / nodeCount * 2;
 		stats[7] = asort;
 		stats[8] = afi;
 		stats[9] = gfi;
