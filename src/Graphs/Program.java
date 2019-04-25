@@ -16,9 +16,13 @@ public class Program
 	public static void main(String[] args)
 	{
 		if (args.length == 8)
+		{
+			save = new SaveFunc("cd");
 			singleThreadedTests(args);
+		}
 		else
 		{
+			kb = new Scanner(System.in);
 			initialMenu();
 			kb.close();
 		}
@@ -225,16 +229,18 @@ public class Program
 				for (int i = 0; i < totalInfo.length; i++)
 				{
 					totalInfo[i] /= repeatOnNew;
-					allInfo[i] = totalInfo[i];
+					allInfo[i] += totalInfo[i];
 				}
 				save.saveInfo(totalInfo, startMid, endOut, repeatOnNew);
 				save.goToParent();
 			}
 		}
-		save.goToParent();
 		LocalDateTime endOut = LocalDateTime.now();
+		int x = (((maxNodeAmount - initalNodeAmount) / increaseAmount + 1)
+				* (maxConnectionAmount - initialConnectionAmount + 1));
+		System.out.println(x);
 		for (int i = 0; i < allInfo.length; i++)
-			allInfo[i] /= ((maxConnectionAmount - initialConnectionAmount) * (maxNodeAmount - initalNodeAmount));
+			allInfo[i] /= x;
 		save.saveInfo(allInfo, startOut, endOut, 0);
 	}
 
