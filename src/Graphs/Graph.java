@@ -16,7 +16,7 @@ public class Graph
 	private HashSet<Tuple> allEdges = new HashSet<>();
 	private ArrayList<Double> afis;
 	private ArrayList<Double> gfis;
-	private static double[] stats;
+	private double[] stats;
 
 	public Graph(HashSet<Tuple> graph)
 	{
@@ -52,6 +52,7 @@ public class Graph
 
 	public void rebuildGraph()
 	{
+		stats = null;
 		for (Tuple t : allEdges)
 		{
 			int k1 = t.getN1();
@@ -204,10 +205,25 @@ public class Graph
 		return allEdges.size();
 	}
 
+	public double getCurrentEdgeCount()
+	{
+		double total = 0;
+		for (Node n : nodes.values())
+			total += n.getEdgeCount();
+		return total;
+
+	}
+
 	public double[] getStats()
 	{
+		if (stats == null)
+			calculateStats();
+		return stats;
+	}
+
+	private void calculateStats()
+	{
 		int nodeCount = nodes.size();
-		double[] stats = new double[10];
 		Node min = nodes.values().iterator().next();
 		Node max = min;
 		double afi = 0;
@@ -250,6 +266,7 @@ public class Graph
 		afi /= nodeCount;
 		gfi /= nodeCount;
 
+		stats = new double[10];
 		stats[0] = nodeCount;
 		stats[1] = allEdges.size();
 		stats[2] = max.getID();
@@ -260,7 +277,15 @@ public class Graph
 		stats[7] = asort;
 		stats[8] = afi;
 		stats[9] = gfi;
-		return stats;
+	}
+
+	public int getMaxEdges()
+	{
+		int max = 0;
+		for (Node n : nodes.values())
+			if (n.getEdgeCount() > max)
+				max = n.getEdgeCount();
+		return max;
 	}
 
 	public HashMap<Integer, Node> getNodes()

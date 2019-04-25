@@ -2,6 +2,7 @@ package Graphs;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -18,7 +19,6 @@ public class Program
 			singleThreadedTests(args);
 		else
 		{
-			kb = new Scanner(System.in);
 			initialMenu();
 			kb.close();
 		}
@@ -99,7 +99,7 @@ public class Program
 		if (choiceValidator("\nHow would you like to fill the graph?\n1. Barbashi-Albert\n2. Random", 1, 2) == 2)
 			graph.randomFill(true, nodeAmt, choiceValidator("\nConnection probability?", 0d, 1d));
 		else
-			graph.randomFill(false, nodeAmt, choiceValidator("\nConnection amount?", 0, 1));
+			graph.randomFill(false, nodeAmt, choiceValidator("\nConnection amount?", 0, Integer.MAX_VALUE));
 	}
 
 	private static void graphMenu()
@@ -154,6 +154,7 @@ public class Program
 	// Multiple single thread menus
 	private static void singleThreadedMenu()
 	{
+
 		int repeatOnNew = choiceValidator("How many new graphs should each test be ran on?", 1, Integer.MAX_VALUE);
 		int repeatOnReload = choiceValidator("How many times should the vaccination be ran per graph", 1,
 				Integer.MAX_VALUE);
@@ -173,40 +174,75 @@ public class Program
 			int maxNodeAmount, int increaseAmount, int initialConnectionAmount, int maxConnectionAmount,
 			double vacPercent)
 	{
+		LocalDateTime startOut = LocalDateTime.now();
+		double[] allInfo = new double[8];
 		for (int nodeAmt = initalNodeAmount; nodeAmt <= maxNodeAmount; nodeAmt += increaseAmount)
 		{
 			for (int connectionAmount = initialConnectionAmount; connectionAmount <= maxConnectionAmount; connectionAmount++)
 			{
-				int totalBiggestRandomSubgraph = 0;
-				int totalBiggestFriendSubgraph = 0;
+				LocalDateTime startMid = LocalDateTime.now();
+				save.createSubfolder("/n=" + nodeAmt + ", m=" + connectionAmount);
+				double[] totalInfo = new double[8];
 				for (int k = 0; k < repeatOnNew; k++)
 				{
+					LocalDateTime startIn = LocalDateTime.now();
 					graph = new Graph();
 					graph.randomFill(false, nodeAmt, connectionAmount);
+					save.createSubfolder("graph " + (k + 1));
+					save.saveGraph(graph);
+					save.saveStats(graph);
+					double[] info = new double[8];
 					for (int l = 0; l < repeatOnReload; l++)
 					{
-						graph.vaccinate(vacPercent, true);
-						totalBiggestRandomSubgraph += Collections.max(graph.getSubgraphs());
-						graph.rebuildGraph();
 						graph.vaccinate(vacPercent, false);
-						totalBiggestFriendSubgraph += Collections.max(graph.getSubgraphs());
+						ArrayList<Integer> subGraphs = graph.getSubgraphs();
+						info[2] += Collections.max(subGraphs);
+						info[3] += subGraphs.size();
+						info[0] += graph.getMaxEdges();
+						info[1] += (graph.getCurrentEdgeCount() / graph.getTotalNodeCount());
+						graph.rebuildGraph();
+						graph.vaccinate(vacPercent, true);
+						subGraphs = graph.getSubgraphs();
+						info[6] += Collections.max(subGraphs);
+						info[7] += subGraphs.size();
+						info[4] += graph.getMaxEdges();
+						info[5] += (graph.getCurrentEdgeCount() / graph.getTotalNodeCount());
+
 						graph.rebuildGraph();
 					}
+					LocalDateTime endIn = LocalDateTime.now();
+
+					for (int i = 0; i < info.length; i++)
+					{
+						info[i] /= repeatOnReload;
+						totalInfo[i] += info[i];
+					}
+					save.saveInfo(info, startIn, endIn, repeatOnReload);
+
+					save.goToParent();
 				}
-				System.out.println("Node amount: " + nodeAmt + ", Connection Amount : " + connectionAmount);
-				System.out.println(
-						"Biggest random subgraph: " + (totalBiggestRandomSubgraph / repeatOnNew / repeatOnReload));
-				System.out.println(
-						"Biggest friend subgraph: " + (totalBiggestFriendSubgraph / repeatOnNew / repeatOnReload));
+				LocalDateTime endOut = LocalDateTime.now();
+				for (int i = 0; i < totalInfo.length; i++)
+				{
+					totalInfo[i] /= repeatOnNew;
+					allInfo[i] = totalInfo[i];
+				}
+				save.saveInfo(totalInfo, startMid, endOut, repeatOnNew);
+				save.goToParent();
 			}
 		}
+		save.goToParent();
+		LocalDateTime endOut = LocalDateTime.now();
+		for (int i = 0; i < allInfo.length; i++)
+			allInfo[i] /= ((maxConnectionAmount - initialConnectionAmount) * (maxNodeAmount - initalNodeAmount));
+		save.saveInfo(allInfo, startOut, endOut, 0);
 	}
 
 	private static void singleThreadedTests(String[] args)
 	{
 		singleThreadedTests(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]),
 				Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]),
-				Integer.parseInt(args[6]), Double.parseDouble(args[0]));
+				Integer.parseInt(args[6]), Double.parseDouble(args[7]));
 	}
 
 	// Multiple multithreaded menus
