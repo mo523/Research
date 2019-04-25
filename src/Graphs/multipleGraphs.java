@@ -29,8 +29,7 @@ public class multipleGraphs
 	public multipleGraphs(multipleGraphs graphs)
 	{
 		for (Graph g : graphs.getGraphs())
-			this.graphs.add(new Graph());
-		// this.graphs.add(new Graph(g.getAllEdges()));
+			this.graphs.add(new Graph(g.getAllEdges()));
 	}
 
 	public void execute()
