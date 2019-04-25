@@ -1,23 +1,39 @@
 
 package Graphs;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 
 public class Graph
 {
 	private Random ran = new Random();
 	private HashMap<Integer, Node> nodes = new HashMap<>();
+	private HashSet<Tuple> allEdges = new HashSet<>();
 	private ArrayList<Double> afis;
 	private ArrayList<Double> gfis;
-	private HashSet<Tuple> allEdges = new HashSet<>();
 	private static double[] stats;
 
-	public Node addNode(int ID)
+	public Graph(HashSet<Tuple> graph)
 	{
-		return nodes.putIfAbsent(ID, new Node(ID));
+		allEdges = graph;
+		rebuildGraph();
 	}
 
-	public void addEdge(Node n1, Node n2)
+	public Graph()
+	{
+	}
+
+	private boolean addNode(int ID)
+	{
+		return nodes.putIfAbsent(ID, new Node(ID)) == null;
+	}
+
+	private void addEdge(Node n1, Node n2)
 	{
 		Tuple t = new Tuple(n1.getID(), n2.getID());
 		allEdges.add(t);
@@ -25,11 +41,13 @@ public class Graph
 		n2.addEdge(n1);
 	}
 
-	public void addEdge(int k1, int k2)
+	// Used only for graph rebuilding (doesn't add tuples to set)
+	private void addEdge(int k1, int k2)
 	{
 		Node n1 = nodes.get(k1);
 		Node n2 = nodes.get(k2);
-		addEdge(n1, n2);
+		n1.addEdge(n2);
+		n2.addEdge(n1);
 	}
 
 	public void rebuildGraph()
@@ -38,23 +56,13 @@ public class Graph
 		{
 			int k1 = t.getN1();
 			int k2 = t.getN2();
-			if (!nodes.containsKey(k1))
-				addNode(k1);
-			if (!nodes.containsKey(k2))
-				addNode(k2);
-			Node n1 = nodes.get(k1);
-			Node n2 = nodes.get(k2);
-			n1.addEdge(n2);
-			n2.addEdge(n1);
+			addNode(k1);
+			addNode(k2);
+			addEdge(k1, k2);
 		}
-
 	}
 
-	public HashMap<Integer, Node> getNodes()
-	{
-		return nodes;
-	}
-
+	// Public random fill which is passed onto private fills
 	public void randomFill(boolean er, int nodeAmt, double prob)
 	{
 		if (er)
@@ -66,12 +74,15 @@ public class Graph
 
 	private void fillER(int nodeAmt, double prob)
 	{
+		// Fill up the graph
 		for (int i = 0; i < nodeAmt; i++)
 			nodes.put(i, new Node(i));
-		for (Node n : nodes.values())
-			for (Node c : nodes.values())
-				if (!c.equals(n) && ran.nextDouble() <= prob)
-					addEdge(n, c);
+
+		// Make some connections
+		for (int i = 0; i < nodes.size() - 1; i++)
+			for (int j = i + 1; j < nodes.size(); j++)
+				if (ran.nextDouble() <= prob)
+					addEdge(nodes.get(i), nodes.get(j));
 	}
 
 	private void fillBA(int nodeAmt, int edgeAmt)
@@ -106,6 +117,16 @@ public class Graph
 		}
 	}
 
+	private ArrayList<Integer> getNodeProbability()
+	{
+		ArrayList<Integer> nodeProbabilityList = new ArrayList<Integer>();
+		for (Node n : nodes.values())
+			for (int i = 0; i <= n.getEdgeCount(); i++)
+				nodeProbabilityList.add(n.getID());
+		return nodeProbabilityList;
+	}
+
+	// Vaccination algorithm
 	public void vaccinate(double prob, boolean ran)
 	{
 		ArrayList<Node> tempNodeList = new ArrayList<>();
@@ -141,6 +162,7 @@ public class Graph
 			System.err.println("Error! vaccinating a null node for some reason");
 	}
 
+	// Public getters
 	public ArrayList<Integer> getSubgraphs()
 	{
 		ArrayList<Integer> subgraphs = new ArrayList<>();
@@ -171,20 +193,14 @@ public class Graph
 		return subgraphs;
 	}
 
-	/**
-	 * @return Integer graph size Calculated by getting the HashMap size
-	 */
 	public int getTotalNodeCount()
 	{
 		return nodes.size();
 	}
 
-	/**
-	 * @return Integer of total edge count which is calculated by the tuple
-	 * collection
-	 */
 	public int getTotalEdgeCount()
 	{
+		// For a complete graph, edge count should be n(n-1)/2
 		return allEdges.size();
 	}
 
@@ -247,13 +263,14 @@ public class Graph
 		return stats;
 	}
 
-	public ArrayList<Integer> getNodeProbability()
+	public HashMap<Integer, Node> getNodes()
 	{
-		ArrayList<Integer> nodeProbabilityList = new ArrayList<Integer>();
-		for (Node n : nodes.values())
-			for (int i = 0; i <= n.getEdgeCount(); i++)
-				nodeProbabilityList.add(n.getID());
-		return nodeProbabilityList;
+		return nodes;
+	}
+
+	public HashSet<Tuple> getAllEdges()
+	{
+		return allEdges;
 	}
 
 	public ArrayList<Double> getAfis()
@@ -265,10 +282,4 @@ public class Graph
 	{
 		return gfis;
 	}
-
-	public HashSet<Tuple> getAllEdges()
-	{
-		return allEdges;
-	}
-
 }

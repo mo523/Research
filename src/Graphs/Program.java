@@ -10,6 +10,7 @@ public class Program
 {
 	private static Scanner kb;
 	private static Graph graph;
+	private static SaveFunc save;
 
 	public static void main(String[] args)
 	{
@@ -28,11 +29,12 @@ public class Program
 	private static void initialMenu()
 	{
 		System.out.println("Welcome to the graphing thingy!");
+		setupFileOutput();
 		int choice = 0;
 		do
 		{
 			choice = choiceValidator(
-					"\nWhat would you like to do?\n0. Quit\n1. Create a single graph"
+					"\nWhat would you like to do?\n0. Quit\n1. Create a single random graph"
 							+ "\n2. Import a graph \n3. Multithreaded graph tests\n4. Single threaded graph tests",
 					0, 5);
 			switch (choice)
@@ -42,7 +44,7 @@ public class Program
 					graphMenu();
 					break;
 				case 2:
-					graph = SaveFunc.importGraph();
+					importMenu();
 					graphMenu();
 					break;
 				case 3:
@@ -56,15 +58,48 @@ public class Program
 		} while (choice != 0);
 	}
 
+	private static void importMenu()
+	{
+		System.out.println("What is the full path to the file you would like to import");
+		String fName;
+		boolean exists = false;
+		do
+		{
+			fName = kb.nextLine();
+			if (!SaveFunc.exists(fName))
+				System.out.println("Warning! File does nor exist");
+			else
+				exists = true;
+		} while (!exists);
+		graph = SaveFunc.importGraph(fName);
+	}
+
+	private static void setupFileOutput()
+	{
+		System.out.println(
+				"\nWhich folder would you like to use for the current session?\nYou can input 'cd' for the current working directory");
+		String directory;
+		boolean exists = false;
+		do
+		{
+			directory = kb.nextLine();
+			if (!SaveFunc.exists(directory))
+				System.out.println("Warning! Not a good directory");
+			else
+				exists = true;
+		} while (!exists);
+		save = new SaveFunc(directory);
+	}
+
 	// Single graph menus
 	private static void newGraphMenu()
 	{
 		graph = new Graph();
 		int nodeAmt = choiceValidator("\nHow many nodes?", 1, Integer.MAX_VALUE);
-		if (choiceValidator("\nHow would you like to fill the graph?\n1. Barbashi-Albert\n2. Random", 1, 2) == 1)
-			graph.randomFill(true, nodeAmt, choiceValidator("\nConnection Probability?", 0d, 1d));
+		if (choiceValidator("\nHow would you like to fill the graph?\n1. Barbashi-Albert\n2. Random", 1, 2) == 2)
+			graph.randomFill(true, nodeAmt, choiceValidator("\nConnection probability?", 0d, 1d));
 		else
-			graph.randomFill(false, nodeAmt, choiceValidator("\nConnection Amount?", 0, 1));
+			graph.randomFill(false, nodeAmt, choiceValidator("\nConnection amount?", 0, 1));
 	}
 
 	private static void graphMenu()
@@ -73,17 +108,21 @@ public class Program
 		do
 		{
 			choice = choiceValidator("\nWhat would you like to do with the graph?\n0. Main Menu"
-					+ "\n1. View stats\n2. Save Graph\n3. Vaccinate graph", 0, 3);
+					+ "\n1. View stats\n2. Vaccinate graph\n3. Save stats\n4. Save graph & stats", 0, 4);
 			switch (choice)
 			{
 				case 1:
 					Display.displayStats(graph.getStats());
 					break;
 				case 2:
-					SaveFunc.saveMenu(graph);
+					vaccinationMenu();
 					break;
 				case 3:
-					vaccinationMenu();
+					save.saveStats(graph);
+					break;
+				case 4:
+					save.saveGraph(graph);
+					save.saveStats(graph);
 					break;
 				default:
 					break;

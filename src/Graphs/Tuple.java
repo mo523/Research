@@ -23,18 +23,24 @@ public class Tuple
 	}
 
 	@Override
-	public int hashCode()
+	public String toString()
 	{
-		return n1 ^ n2 * n2 ^ n1;
+		return n1 + " " + n2;
 	}
 
-//	@Override
-//	public boolean equals(Object o)
-//	{
-//		if (!(o instanceof Tuple))
-//			return false;
-//		Tuple pairo = (Tuple) o;
-//		return this.left.equals(pairo.getLeft()) && this.right.equals(pairo.getRight());
-//	}
+	@Override
+	public int hashCode()
+	{
+		return n1 ^ n2;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || o.getClass() != this.getClass())
+			return false;
+		return (this.getN1() == ((Tuple) o).getN1() && this.getN2() == ((Tuple) o).getN2())
+				|| (this.getN1() == ((Tuple) o).getN2() && this.getN2() == ((Tuple) o).getN1());
+	}
 
 }

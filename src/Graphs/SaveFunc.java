@@ -5,76 +5,31 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Scanner;
 
 public class SaveFunc
 {
+	private File directory;
 
-	public static Graph importGraph()
+	public SaveFunc(String directory)
 	{
-		Graph graph = new Graph();
-		Scanner kb = new Scanner(System.in);
-
-		String fName;
-		do
-		{
-			fName = shortcut(kb.nextLine());
-		} while (!Files.exists(Path.of(fName)));
-		kb.close();
-		
-		try (Scanner file = new Scanner(new File(fName));)
-		{
-
-			do
-			{
-				String[] in = file.nextLine().split("\\s+");
-				int n1 = Integer.parseInt(in[0]);
-				int n2 = Integer.parseInt(in[1]);
-				if (!graph.getNodes().containsKey(n1))
-					graph.addNode(n1);
-				if (!graph.getNodes().containsKey(n2))
-					graph.addNode(n2);
-				graph.addEdge(n1, n2);
-			} while (kb.hasNextLine());
-
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
-		return graph;
+		directory = shortcut(directory);
+		directory += new SimpleDateFormat("MM.dd.yy HH.mm a").format(Calendar.getInstance().getTime()) + "/";
+		new File(directory).mkdir();
+		this.directory = new File(directory);
+		System.out.println("\nFiles will be saved to " + this.directory);
 	}
 
-	public static void saveTemp(HashSet<Tuple> edges, String fName)
+	public void saveStats(Graph graph)
 	{
-		fName = shortcut(fName);
 		PrintWriter file;
+		double[] stats = graph.getStats();
 		try
 		{
-			file = new PrintWriter(fName + "temp");
-			for (Tuple t : edges)
-				file.println(t.getN1() + " " + t.getN2());
-			file.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	public static void saveGraph(ArrayList<Double> afis, ArrayList<Double> gfis, String fName, double[] stats)
-	{
-		fName = shortcut(fName);
-		PrintWriter file;
-
-		try
-		{
-			file = new PrintWriter(fName + "_stats");
+			file = new PrintWriter(directory + "/stats");
 
 			file.println("\nTotal Nodes:\t\t" + stats[0]);
 			file.println("Total Edges:\t\t" + stats[1]);
@@ -86,44 +41,70 @@ public class SaveFunc
 			file.println("GFI:\t\t\t" + stats[9]);
 			file.close();
 
-			file = new PrintWriter((fName + "_afis"));
-			for (double d : afis)
+			file = new PrintWriter(directory + "/afis");
+			for (double d : graph.getAfis())
 				file.println(d);
 			file.close();
 
-			file = new PrintWriter((fName + "_gfis"));
-			for (double d : gfis)
+			file = new PrintWriter(directory + "/gfis");
+			for (double d : graph.getGfis())
 				file.println(d);
 			file.close();
 		}
 		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
-	public static void saveMenu(Graph graph)
+	public void saveGraph(Graph graph)
 	{
-		Scanner kb = new Scanner(System.in);
-		System.out.println("Filename and location?");
-		String fName = kb.nextLine();
-		kb.close();
-		SaveFunc.saveGraph(graph.getAfis(), graph.getGfis(), fName, graph.getStats());
-
-	}
-
-	private static String shortcut(String fName)
-	{
-		if (fName.charAt(0) == ',')
+		try (PrintWriter file = new PrintWriter(directory + "/graph");)
 		{
-			String m = "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs";
-			fName = fName.replace(',', '/');
-			m += fName;
-			fName = m;
+			for (Tuple t : graph.getAllEdges())
+				file.println(t.getN1() + " " + t.getN2());
 		}
-		return fName;
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
+	public static Graph importGraph(String fName)
+	{
+		HashSet<Tuple> graph = new HashSet<>();
+		try (Scanner file = new Scanner(new File(fName));)
+		{
+			do
+			{
+				String[] in = file.nextLine().split("\\s+");
+				int n1 = Integer.parseInt(in[0]);
+				int n2 = Integer.parseInt(in[1]);
+				graph.add(new Tuple(n1, n2));
+			} while (file.hasNextLine());
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		return new Graph(graph);
+	}
+
+	private static String shortcut(String directory)
+	{
+		if (directory.equalsIgnoreCase("m"))
+			return "C:/Users/moshe/Documents/College/MCO 493 Special Research Project/Graphs/";
+		else if (directory.equalsIgnoreCase("y"))
+			return "C:/Users/ysontag?????????";
+		else if (directory.equalsIgnoreCase("cd"))
+			return System.getProperty("user.dir") + "\\";
+		return directory;
+	}
+
+	public static boolean exists(String directory)
+	{
+		return Files.exists(Path.of(shortcut(directory)));
+	}
 }
