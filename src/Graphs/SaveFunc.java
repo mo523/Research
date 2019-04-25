@@ -167,7 +167,7 @@ public class SaveFunc
 		else if (directory.equalsIgnoreCase("y"))
 			return "C:/Users/ysontag?????????";
 		else if (directory.equalsIgnoreCase("cd"))
-			return System.getProperty("user.dir") + "\\";
+			return System.getProperty("user.dir") + "/";
 		return directory;
 	}
 
