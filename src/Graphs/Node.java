@@ -7,8 +7,6 @@ public class Node
 	private HashSet<Node> edges = new HashSet<>();
 	private int ID;
 	private boolean color = false;
-	private Node biggestFriend;
-	private int lastNodeCount;
 
 	public Node(int ID)
 	{
@@ -22,15 +20,10 @@ public class Node
 
 	public Node getBiggestFriend()
 	{
-		if (biggestFriend == null || lastNodeCount != edges.size())
-		{
-			Node m = new Node(-1);
-			for (Node n : edges)
-				if (n.getEdgeCount() > m.getEdgeCount())
-					m = n;
-			biggestFriend = m;
-			lastNodeCount = edges.size();
-		}
+		Node biggestFriend = new Node(-1);
+		for (Node n : edges)
+			if (n.getEdgeCount() > biggestFriend.getEdgeCount())
+				biggestFriend = n;
 		return biggestFriend;
 	}
 
