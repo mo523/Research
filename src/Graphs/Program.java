@@ -141,14 +141,14 @@ public class Program
 		ArrayList<Integer> subgraphs;
 
 		System.out.println("Random");
-		graph.vaccinate(p, true);
+		graph.vaccinate(p, 0);
 		subgraphs = graph.getSubgraphs();
 		System.out.println("Total Subgraphs: " + subgraphs.size());
 		System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
 
 		graph.rebuildGraph();
 		System.out.println("Max friend");
-		graph.vaccinate(p, false);
+		graph.vaccinate(p, 1);
 		subgraphs = graph.getSubgraphs();
 		System.out.println("Total Subgraphs: " + subgraphs.size());
 		System.out.println("Biggest Subgraph: " + Collections.max(subgraphs));
@@ -198,14 +198,14 @@ public class Program
 					double[] info = new double[8];
 					for (int l = 0; l < repeatOnReload; l++)
 					{
-						graph.vaccinate(vacPercent, false);
+						graph.vaccinate(vacPercent, 0);
 						ArrayList<Integer> subGraphs = graph.getSubgraphs();
 						info[2] += Collections.max(subGraphs);
 						info[3] += subGraphs.size();
 						info[0] += graph.getMaxEdges();
 						info[1] += (graph.getCurrentEdgeCount() / graph.getTotalNodeCount());
 						graph.rebuildGraph();
-						graph.vaccinate(vacPercent, true);
+						graph.vaccinate(vacPercent, 1);
 						subGraphs = graph.getSubgraphs();
 						info[6] += Collections.max(subGraphs);
 						info[7] += subGraphs.size();
@@ -300,10 +300,10 @@ public class Program
 					System.out.println("How many threads?");
 					int threadAmt = kb.nextInt();
 					System.out.println(graphs.getGraphs().size());
-					boolean ran = choiceValidator("1. Random\n2. Friends", 1, 2) == 1;
+					int friend = choiceValidator("1. Random\n2. Friends", 1, 2);
 					System.out.println("What % of peeps get vacced?");
 					double p = kb.nextDouble();
-					graphs.subGraph(p, ran, threadAmt);
+					graphs.subGraph(p, friend, threadAmt);
 					System.out.println("\nAvg Total Subgraphs: " + graphs.totalSubgraphAvg());
 					System.out.println("Avg Biggest Subgraph: " + graphs.largestSubgraphAvg());
 					break;
@@ -314,13 +314,13 @@ public class Program
 					System.out.println("How many threads?");
 					threadAmt = kb.nextInt();
 					System.out.println(graphs.getGraphs().size());
-					ran = choiceValidator("1. Random\n2. Friends", 1, 2) == 1;
+					friend = choiceValidator("1. Random\n2. Friends", 1, 2);
 					System.out.println("What % of peeps get vacced?");
 					p = kb.nextDouble();
 					for (int i = 0; i < numTests; i++)
 					{
 						multipleGraphs testCases = new multipleGraphs(graphs);
-						testCases.subGraph(p, ran, threadAmt);
+						testCases.subGraph(p, friend, threadAmt);
 						System.out.println("test: " + i);
 						for (Graph g : testCases.getGraphs())
 							results.add(g.getSubgraphs().size() + " " + Collections.max(g.getSubgraphs()) + " ");

@@ -128,39 +128,33 @@ public class Graph
 	}
 
 	// Vaccination algorithm
-	public void vaccinate(double prob, boolean ran)
+	public void vaccinate(double prob, int friend)
 	{
 		ArrayList<Node> tempNodeList = new ArrayList<>();
 		for (Node n : nodes.values())
 			tempNodeList.add(n);
 		Collections.shuffle(tempNodeList);
 		int vacAmt = (int) (prob * tempNodeList.size());
-		tempNodeList.stream().limit(vacAmt).forEach(n -> quarNode(n, ran));
+		tempNodeList.stream().limit(vacAmt).forEach(n -> pickNode(n, friend));
 	}
 
-	private void quarNode(Node n, boolean ran)
+	private void pickNode(Node n, int friend)
 	{
-		if (n != null)
-		{
-			if (ran)
-			{
-				for (Node e : n.getEdges())
-					e.removeEdge(n);
-				n.resetEdges();
-			}
-			else
-			{
-				Node m = new Node(-1);
-				for (Node e : n.getEdges())
-					if (e.getEdgeCount() > m.getEdgeCount())
-						m = e;
-				for (Node e : m.getEdges())
-					e.removeEdge(m);
-				m.resetEdges();
-			}
-		}
-		else
+		for (int i = 0; i < friend; i++)
+			n = n.getBiggestFriend();
+		quarNode(n);
+	}
+
+	private void quarNode(Node n)
+	{
+		if (n == null)
 			System.err.println("Error! vaccinating a null node for some reason");
+		else
+		{
+			for (Node m : n.getEdges())
+				m.removeEdge(n);
+			n.resetEdges();
+		}
 	}
 
 	// Public getters

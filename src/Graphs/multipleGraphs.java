@@ -39,7 +39,6 @@ public class multipleGraphs
 		threadPool.shutdown();
 		while (!threadPool.isTerminated());
 		System.out.println("Graphs Created!!");
-
 	}
 
 	public Graph createGraph()
@@ -57,11 +56,11 @@ public class multipleGraphs
 		return graphs;
 	}
 
-	public void subGraph(double p, boolean ran, int threadAmt)
+	public void subGraph(double p, int friend, int threadAmt)
 	{
 		threadPool = Executors.newFixedThreadPool(threadAmt);
 		for (Graph graph : graphs)
-			threadPool.submit(() -> { graph.vaccinate(p, ran); });
+			threadPool.submit(() -> { graph.vaccinate(p, friend); });
 
 		threadPool.shutdown();
 		while (!threadPool.isTerminated());
