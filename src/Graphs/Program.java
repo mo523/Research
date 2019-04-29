@@ -15,7 +15,7 @@ public class Program
 
 	public static void main(String[] args)
 	{
-		if (args.length == 8)
+		if (args.length == 9)
 		{
 			save = new SaveFunc("cd");
 			singleThreadedTests(args);
