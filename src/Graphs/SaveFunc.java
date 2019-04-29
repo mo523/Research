@@ -218,7 +218,13 @@ public class SaveFunc
 		else if (directory.equalsIgnoreCase("y"))
 			return "C:/Users/ysontag?????????";
 		else if (directory.equalsIgnoreCase("cd"))
-			return System.getProperty("user.dir") + "/";
+		{
+			directory = System.getProperty("user.dir") + "/graphs";
+			if (!Files.exists(Path.of(directory)))
+				new File(directory).mkdir();
+			return directory + "/";
+		}
+
 		return directory;
 	}
 
