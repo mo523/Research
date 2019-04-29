@@ -89,24 +89,70 @@ public class SaveFunc
 
 	}
 
-	public void saveInfo(double[] info, LocalDateTime start, LocalDateTime end, int times)
+	public void saveInfo(double[][][] info, double[][] totals, LocalDateTime start, LocalDateTime end)
 	{
+
 		try (PrintWriter file = new PrintWriter(directory + "/info");)
 		{
-			file.println("Tests started at: " + start.format(DateTimeFormatter.ofPattern("M/dd h:mm:ss a"))
-					+ " and finished at " + end.format(DateTimeFormatter.ofPattern("M/dd h:mm:ss a"))
-					+ " for a total time of: " + getDuration(start, end) + "\r\n\r\n");
+			StringBuilder sb = new StringBuilder();
+			String nl = "\r\n";
+			sb.append("Tests started at: " + start.format(DateTimeFormatter.ofPattern("M/dd h:mm:ss a"))
+					+ "\r\n\t& finished at " + end.format(DateTimeFormatter.ofPattern("M/dd h:mm:ss a"))
+					+ "\r\n\ttotal: " + getDuration(start, end) + nl);
 
-			file.println("Friend tests:");
-			file.println("Max node: \t\t" + info[0]);
-			file.println("Avg node: \t\t" + info[1]);
-			file.println("Max subgraph: \t" + info[2]);
-			file.println("Avg subgraph: \t" + info[3]);
-			file.println("\r\nRandom tests:");
-			file.println("Max node: \t\t" + info[4]);
-			file.println("Avg node: \t\t" + info[5]);
-			file.println("Max subgraph: \t" + info[6]);
-			file.println("Avg subgraph: \t" + info[7]);
+			for (int i = 0; i < totals.length; i++)
+			{
+				sb.append(nl);
+				sb.append(i == 0 ? "Random" : ("Friend " + i));
+				sb.append(" Tests:" + nl);
+				sb.append("Max node:\t\t" + totals[i][0] + nl);
+				sb.append("Average node:\t" + totals[i][1] + nl);
+				sb.append("Max subgraph:\t" + totals[i][2] + nl);
+				sb.append("Total subs:\t\t" + totals[i][3] + nl);
+			}
+			sb.append(nl + nl);
+			for (int i = 0; i < info.length; i++)
+				for (int j = 0; j < info[i].length; j++)
+				{
+					sb.append(nl);
+					sb.append(i == 0 ? "Random" : ("Friend " + i));
+					sb.append(" Tests:" + nl);
+					sb.append("Max node:\t\t" + info[i][j][0] + nl);
+					sb.append("Average node:\t" + info[i][j][1] + nl);
+					sb.append("Max subgraph:\t" + info[i][j][2] + nl);
+					sb.append("Total subs:\t\t" + info[i][j][3] + nl);
+				}
+
+			file.println(sb);
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void saveInfo(double[][] totals, LocalDateTime start, LocalDateTime end)
+	{
+
+		try (PrintWriter file = new PrintWriter(directory + "/info");)
+		{
+			StringBuilder sb = new StringBuilder();
+			String nl = "\r\n";
+			sb.append("Tests started at: " + start.format(DateTimeFormatter.ofPattern("M/dd h:mm:ss a"))
+					+ "\r\n\t& finished at " + end.format(DateTimeFormatter.ofPattern("M/dd h:mm:ss a"))
+					+ "\r\n\ttotal: " + getDuration(start, end) + nl);
+
+			for (int i = 0; i < totals.length; i++)
+			{
+				sb.append(nl);
+				sb.append(i == 0 ? "Random" : ("Friend " + i));
+				sb.append(" Tests:" + nl);
+				sb.append("Max node:\t\t" + totals[i][0] + nl);
+				sb.append("Average node:\t" + totals[i][1] + nl);
+				sb.append("Max subgraph:\t" + totals[i][2] + nl);
+				sb.append("Total subs:\t\t" + totals[i][3] + nl);
+			}
+			file.println(sb);
 		}
 		catch (FileNotFoundException e)
 		{
@@ -120,6 +166,11 @@ public class SaveFunc
 		long hours = ChronoUnit.HOURS.between(start, end);
 		long mins = ChronoUnit.MINUTES.between(start, end);
 		long secs = ChronoUnit.SECONDS.between(start, end);
+		mins %= 60;
+		secs %= 60;
+
+		if (secs + mins + hours == 0)
+			return new StringBuilder("Instantaneous!");
 
 		if (hours > 0)
 			sb.append(hours + " hour");

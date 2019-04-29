@@ -167,71 +167,84 @@ public class Program
 		int increaseAmount = choiceValidator("Increase amount?", 1, Integer.MAX_VALUE);
 		int initialConnectionAmount = choiceValidator("Initial connection amount", 1, Integer.MAX_VALUE);
 		int maxConnectionAmount = choiceValidator("Maximum connection", 1, Integer.MAX_VALUE);
+		int maxFriendZone = choiceValidator("Max friend zone?", 1, Integer.MAX_VALUE) + 1;
 		double vacPercent = choiceValidator("Percent of population that gets vaccinated?", 0d, 1d);
 
-		singleThreadedTests(repeatOnNew, repeatOnReload, initalNodeAmount, maxNodeAmount, increaseAmount,
+		singleThreadedTests(maxFriendZone, repeatOnNew, repeatOnReload, initalNodeAmount, maxNodeAmount, increaseAmount,
 				initialConnectionAmount, maxConnectionAmount, vacPercent);
-
 	}
 
-	private static void singleThreadedTests(int repeatOnNew, int repeatOnReload, int initalNodeAmount,
-			int maxNodeAmount, int increaseAmount, int initialConnectionAmount, int maxConnectionAmount,
-			double vacPercent)
+	private static void singleThreadedTests(int maxFriendZone, int maxRepeatOnNew, int maxRepeatOnReload,
+			int initalNodeAmount, int maxNodeAmount, int increaseAmount, int initialConnectionAmount,
+			int maxConnectionAmount, double vacPercent)
 	{
 		LocalDateTime startOut = LocalDateTime.now();
-		double[] allInfo = new double[8];
+		double[][] allInfo = new double[maxFriendZone][4];
 		for (int nodeAmt = initalNodeAmount; nodeAmt <= maxNodeAmount; nodeAmt += increaseAmount)
 		{
 			for (int connectionAmount = initialConnectionAmount; connectionAmount <= maxConnectionAmount; connectionAmount++)
 			{
 				LocalDateTime startMid = LocalDateTime.now();
 				save.createSubfolder("/n=" + nodeAmt + ", m=" + connectionAmount);
-				double[] totalInfo = new double[8];
-				for (int k = 0; k < repeatOnNew; k++)
+				double[][][] totalInfo = new double[maxFriendZone][maxRepeatOnNew][4];
+				for (int repeatOnNew = 0; repeatOnNew < maxRepeatOnNew; repeatOnNew++)
 				{
 					LocalDateTime startIn = LocalDateTime.now();
 					graph = new Graph();
 					graph.randomFill(false, nodeAmt, connectionAmount);
-					save.createSubfolder("graph " + (k + 1));
+					save.createSubfolder("graph " + (repeatOnNew + 1));
 					save.saveGraph(graph);
 					save.saveStats(graph);
-					double[] info = new double[8];
-					for (int l = 0; l < repeatOnReload; l++)
+					double[][][] info = new double[maxFriendZone][maxRepeatOnReload][4];
+					for (int friendZone = 0; friendZone < maxFriendZone; friendZone++)
 					{
-						graph.vaccinate(vacPercent, 0);
-						ArrayList<Integer> subGraphs = graph.getSubgraphs();
-						info[2] += Collections.max(subGraphs);
-						info[3] += subGraphs.size();
-						info[0] += graph.getMaxEdges();
-						info[1] += (graph.getCurrentEdgeCount() / graph.getTotalNodeCount());
-						graph.rebuildGraph();
-						graph.vaccinate(vacPercent, 1);
-						subGraphs = graph.getSubgraphs();
-						info[6] += Collections.max(subGraphs);
-						info[7] += subGraphs.size();
-						info[4] += graph.getMaxEdges();
-						info[5] += (graph.getCurrentEdgeCount() / graph.getTotalNodeCount());
 
-						graph.rebuildGraph();
+						for (int repeatOnReload = 0; repeatOnReload < maxRepeatOnReload; repeatOnReload++)
+						{
+							graph.vaccinate(vacPercent, friendZone);
+							ArrayList<Integer> subGraphs = graph.getSubgraphs();
+							info[friendZone][repeatOnReload][0] = graph.getMaxEdges();
+							info[friendZone][repeatOnReload][1] = (graph.getCurrentEdgeCount()
+									/ graph.getTotalNodeCount());
+							info[friendZone][repeatOnReload][2] = Collections.max(subGraphs);
+							info[friendZone][repeatOnReload][3] = subGraphs.size();
+							graph.rebuildGraph();
+						}
 					}
 					LocalDateTime endIn = LocalDateTime.now();
 
+					double[][] totals = new double[maxFriendZone][4];
 					for (int i = 0; i < info.length; i++)
-					{
-						info[i] /= repeatOnReload;
-						totalInfo[i] += info[i];
-					}
-					save.saveInfo(info, startIn, endIn, repeatOnReload);
+						for (int j = 0; j < info[i].length; j++)
+							for (int k = 0; k < info[i][j].length; k++)
+								totals[i][k] += info[i][j][k];
+
+					for (int i = 0; i < totals.length; i++)
+						for (int j = 0; j < totals[i].length; j++)
+						{
+							totals[i][j] /= maxRepeatOnReload;
+							totalInfo[i][repeatOnNew][j] = totals[i][j];
+						}
+
+					save.saveInfo(info, totals, startIn, endIn);
 
 					save.goToParent();
 				}
 				LocalDateTime endOut = LocalDateTime.now();
+				double[][] totals = new double[maxFriendZone][4];
+
 				for (int i = 0; i < totalInfo.length; i++)
-				{
-					totalInfo[i] /= repeatOnNew;
-					allInfo[i] += totalInfo[i];
-				}
-				save.saveInfo(totalInfo, startMid, endOut, repeatOnNew);
+					for (int j = 0; j < totalInfo[i].length; j++)
+						for (int k = 0; k < totalInfo[i][j].length; k++)
+							totals[i][k] += totalInfo[i][j][k];
+
+				for (int i = 0; i < totals.length; i++)
+					for (int j = 0; j < totals[i].length; j++)
+					{
+						totals[i][j] /= maxRepeatOnNew;
+						allInfo[i][j] += totals[i][j];
+					}
+				save.saveInfo(totalInfo, totals, startMid, endOut);
 				save.goToParent();
 			}
 		}
@@ -240,15 +253,18 @@ public class Program
 				* (maxConnectionAmount - initialConnectionAmount + 1));
 		System.out.println(x);
 		for (int i = 0; i < allInfo.length; i++)
-			allInfo[i] /= x;
-		save.saveInfo(allInfo, startOut, endOut, 0);
+			for (int j = 0; j < allInfo[i].length; j++)
+				allInfo[i][j] /= x;
+		save.saveInfo(allInfo, startOut, endOut);
+
+		System.out.println("Complete!!");
 	}
 
 	private static void singleThreadedTests(String[] args)
 	{
 		singleThreadedTests(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]),
 				Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]),
-				Integer.parseInt(args[6]), Double.parseDouble(args[7]));
+				Integer.parseInt(args[6]), Integer.parseInt(args[7]), Double.parseDouble(args[8]));
 	}
 
 	// Multiple multithreaded menus
