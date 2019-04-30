@@ -167,7 +167,7 @@ public class Program
 		int increaseAmount = choiceValidator("Increase amount?", 1, Integer.MAX_VALUE);
 		int initialConnectionAmount = choiceValidator("Initial connection amount", 1, Integer.MAX_VALUE);
 		int maxConnectionAmount = choiceValidator("Maximum connection", 1, Integer.MAX_VALUE);
-		int maxFriendZone = choiceValidator("Max friend zone?", 1, Integer.MAX_VALUE) + 1;
+		int maxFriendZone = choiceValidator("Max friend zone?", -1, Integer.MAX_VALUE) + 1;
 		double vacPercent = choiceValidator("Percent of population that gets vaccinated?", 0d, 1d);
 
 		singleThreadedTests(maxFriendZone, repeatOnNew, repeatOnReload, initalNodeAmount, maxNodeAmount, increaseAmount,
