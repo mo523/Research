@@ -140,11 +140,18 @@ public class Graph
 
 	private void pickNode(Node n, int friend)
 	{
+		if (friend == -1)
+			friend = randomFriend();
 		for (int i = 0; i < friend; i++)
 			n = n.getBiggestFriend();
 		quarNode(n);
 	}
-
+	
+	private int randomFriend()
+	{
+		return ran.nextInt(7) + 3;
+	}
+	
 	private void quarNode(Node n)
 	{
 		if (n == null)
