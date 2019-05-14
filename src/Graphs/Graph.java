@@ -149,7 +149,7 @@ public class Graph
 	
 	private int randomFriend()
 	{
-		return ran.nextInt(7) + 3;
+		return ran.nextInt(4) + 6;
 	}
 	
 	private void quarNode(Node n)

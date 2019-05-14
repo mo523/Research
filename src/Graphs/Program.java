@@ -167,7 +167,7 @@ public class Program
 		int increaseAmount = choiceValidator("Increase amount?", 1, Integer.MAX_VALUE);
 		int initialConnectionAmount = choiceValidator("Initial connection amount", 1, Integer.MAX_VALUE);
 		int maxConnectionAmount = choiceValidator("Maximum connection", 1, Integer.MAX_VALUE);
-		int maxFriendZone = choiceValidator("Max friend zone?", -1, Integer.MAX_VALUE) + 1;
+		int maxFriendZone = choiceValidator("Max friend zone?", 2, Integer.MAX_VALUE) + 2;
 		double vacPercent = choiceValidator("Percent of population that gets vaccinated?", 0d, 1d);
 
 		singleThreadedTests(maxFriendZone, repeatOnNew, repeatOnReload, initalNodeAmount, maxNodeAmount, increaseAmount,
@@ -201,7 +201,7 @@ public class Program
 
 						for (int repeatOnReload = 0; repeatOnReload < maxRepeatOnReload; repeatOnReload++)
 						{
-							graph.vaccinate(vacPercent, friendZone);
+							graph.vaccinate(vacPercent, (friendZone + 1 == maxFriendZone ? -1 : friendZone));
 							ArrayList<Integer> subGraphs = graph.getSubgraphs();
 							info[friendZone][repeatOnReload][0] = graph.getMaxEdges();
 							info[friendZone][repeatOnReload][1] = (graph.getCurrentEdgeCount()

@@ -103,7 +103,7 @@ public class SaveFunc
 			for (int i = 0; i < totals.length; i++)
 			{
 				sb.append(nl);
-				sb.append(i == 0 ? "Random" : ("Friend " + i));
+				sb.append(i == 0 ? "Random" : (i + 1 == totals.length ? "Random Friend" : ("Friend " + i)));
 				sb.append(" Tests:" + nl);
 				sb.append("Max node:\t\t" + totals[i][0] + nl);
 				sb.append("Average node:\t" + totals[i][1] + nl);
@@ -115,7 +115,7 @@ public class SaveFunc
 				for (int j = 0; j < info[i].length; j++)
 				{
 					sb.append(nl);
-					sb.append(i == 0 ? "Random" : ("Friend " + i));
+					sb.append(i == 0 ? "Random" : (i + 1 == info.length ? "Random Friend" : ("Friend " + i)));
 					sb.append(" Tests:" + nl);
 					sb.append("Max node:\t\t" + info[i][j][0] + nl);
 					sb.append("Average node:\t" + info[i][j][1] + nl);
@@ -145,7 +145,7 @@ public class SaveFunc
 			for (int i = 0; i < totals.length; i++)
 			{
 				sb.append(nl);
-				sb.append(i == 0 ? "Random" : ("Friend " + i));
+				sb.append(i == 0 ? "Random" : (i + 1 == totals.length ? "Random Friend" : ("Friend " + i)));
 				sb.append(" Tests:" + nl);
 				sb.append("Max node:\t\t" + totals[i][0] + nl);
 				sb.append("Average node:\t" + totals[i][1] + nl);
